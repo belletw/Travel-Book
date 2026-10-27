@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>漫遊繪本集 📖 我的旅行足跡與 Notion 行程總覽</title>
+  <!-- Google Fonts: Huninn & Zen Maru Gothic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Huninn&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'washi': '#FFFCF6',
+            'sumi': '#3E3A39',
+            'coral': '#F2A497',
+            'yamabuki': '#F6D27A',
+            'mizu': '#A8D3E6',
+            'wakatake': '#B9DAA5',
+          },
+          fontFamily: {
+            maru: ['"Huninn"', '"jf-openhuninn"', '"Zen Maru Gothic"', 'sans-serif'],
+          },
+          boxShadow: {
+            'hard': '4px 4px 0px #3E3A39',
+            'hard-sm': '2.5px 2.5px 0px #3E3A39',
+            'hard-lg': '6px 6px 0px #3E3A39',
+            'hard-pressed': '1px 1px 0px #3E3A39',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #FFFCF6;
+      color: #3E3A39;
+      font-family: 'Huninn', 'jf-openhuninn', 'Zen Maru Gothic', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-image: radial-gradient(#3E3A39 0.65px, transparent 0.65px);
+      background-size: 24px 24px;
+      background-position: 0 0;
+    }
+
+    /* Picture-book hard stroke elements */
+    .border-ink {
+      border: 3px solid #3E3A39;
+    }
+    .border-ink-sm {
+      border: 2px solid #3E3A39;
+    }
+
+    /* Handcrafted stamp style */
+    .stamp-must {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-5deg);
+      border-radius: 9999px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+    }
+
+    /* Soft floating & bounce animations */
+    @keyframes float-cloud {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(-6px) translateX(4px); }
+    }
+    @keyframes sway-boat {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      50% { transform: rotate(2.5deg) translateY(-3px); }
+    }
+    @keyframes bob-tram {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3.5px); }
+    }
+    @keyframes pop-bounce {
+      0% { transform: scale(0.95) translateY(6px); opacity: 0; }
+      70% { transform: scale(1.015) translateY(-2px); }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .anim-cloud { animation: float-cloud 4.8s ease-in-out infinite; }
+    .anim-boat { animation: sway-boat 3.6s ease-in-out infinite; }
+    .anim-tram { animation: bob-tram 2.8s ease-in-out infinite; }
+    .pop-in { animation: pop-bounce 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+    /* Accessibility: Respect Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FFFCF6;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #A8D3E6;
+      border: 2.5px solid #3E3A39;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #F2A497;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-sumi selection:bg-yamabuki selection:text-sumi pb-24">
+
+  <!-- ==================== 1. STICKY TOP NAVIGATION ==================== -->
+  <header class="sticky top-0 z-50 bg-washi border-b-[3px] border-sumi px-3 py-2.5 sm:px-6">
+    <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
+      
+      <!-- Brand / Back Button -->
+      <div class="flex items-center gap-2">
+        <button id="nav-back-btn" onclick="switchView('portal')" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-full bg-yamabuki border-ink text-xs sm:text-sm font-black shadow-hard-sm hover:-translate-y-0.5 active:translate-y-0 transition-all">
+          <span>← 返回總覽</span>
+        </button>
+
+        <button onclick="switchView('portal')" class="flex items-center gap-2 group text-left">
+          <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-coral border-ink text-lg font-black shadow-hard-sm group-hover:rotate-6 transition-transform">
+            📖
+          </span>
+          <div>
+            <span class="font-black text-base sm:text-xl tracking-tight block leading-none" id="header-title">漫遊繪本集</span>
+            <span class="text-[10px] font-bold text-sumi/70 block mt-0.5" id="header-subtitle">All Notion Trips Portal</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Portal Navigation Pills (Shown in Portal View) -->
+      <nav id="portal-nav" class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold">
+        <a href="#trips-grid-section" class="px-2.5 py-1.5 sm:px-3 rounded-full border-ink bg-white hover:bg-yamabuki shadow-hard-sm transition-all">
+          🗺️ 旅程書架
+        </a>
+        <a href="#guide-section" class="hidden sm:inline-block px-3 py-1.5 rounded-full border-ink bg-white hover:bg-mizu shadow-hard-sm transition-all">
+          💡 擴充教學
+        </a>
+        <button onclick="openAddModal()" class="px-3 py-1.5 rounded-full border-ink bg-wakatake hover:bg-yamabuki shadow-hard-sm transition-all hover:-translate-y-0.5 font-black flex items-center gap-1">
+          <span>＋ 新增行程</span>
+        </button>
+      </nav>
+
+      <!-- Detail Navigation Pills (Shown inside HK Trip or Detail View) -->
+      <nav id="detail-nav" class="hidden items-center gap-1 sm:gap-2 text-xs sm:text-sm font-bold overflow-x-auto py-0.5">
+        <a href="#flights" class="px-2.5 py-1 rounded-full border-ink bg-white hover:bg-yamabuki shadow-hard-sm whitespace-nowrap">✈️ 航班</a>
+        <a href="#itinerary" class="px-2.5 py-1 rounded-full border-ink bg-yamabuki shadow-hard-sm whitespace-nowrap">🗓️ 行程</a>
+        <a href="#hotel" class="px-2.5 py-1 rounded-full border-ink bg-white hover:bg-mizu shadow-hard-sm whitespace-nowrap">🏨 住宿</a>
+        <a href="#checklist" class="px-2.5 py-1 rounded-full border-ink bg-white hover:bg-wakatake shadow-hard-sm whitespace-nowrap">✅ 清單</a>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- ==================== VIEW A: MASTER PORTAL (旅遊總覽首頁) ==================== -->
+  <!-- ========================================================================= -->
+  <div id="view-portal" class="max-w-4xl mx-auto px-4 sm:px-6 space-y-10 sm:space-y-14 mt-6 sm:mt-8 pop-in">
+
+    <!-- 1. PORTAL HERO SECTION -->
+    <section class="bg-white border-ink rounded-[28px] p-5 sm:p-8 shadow-hard relative overflow-hidden">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <!-- Text & Stats -->
+        <div class="space-y-4 z-10 w-full md:w-3/5">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yamabuki border-ink text-xs font-black shadow-hard-sm">
+            <span>🎒 旅行手帖總覽</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-sumi"></span>
+            <span>隨時串聯 Notion 筆記</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl font-black tracking-tight leading-snug">
+            把每一趟旅行，<br/>
+            收藏進<span class="bg-coral/40 px-2 rounded-lg border-b-[3px] border-sumi">手繪繪本</span>裡！
+          </h1>
+
+          <p class="text-sm sm:text-base font-medium text-sumi/80 leading-relaxed">
+            這裡是所有旅遊計畫與回憶的秘密基地。每次在 Notion 規劃好新的行程，只要點選「＋新增行程」，就能自動產生專屬繪本卡片！
+          </p>
+
+          <!-- Mini Stats Counters -->
+          <div class="grid grid-cols-3 gap-2.5 pt-2">
+            <div class="bg-washi border-ink-sm rounded-2xl p-2.5 text-center shadow-hard-sm">
+              <span class="block text-xl sm:text-2xl font-black text-coral" id="stat-total">3</span>
+              <span class="text-[11px] font-bold text-sumi/70">收藏旅程本</span>
+            </div>
+            <div class="bg-washi border-ink-sm rounded-2xl p-2.5 text-center shadow-hard-sm">
+              <span class="block text-xl sm:text-2xl font-black text-mizu" id="stat-upcoming">1</span>
+              <span class="text-[11px] font-bold text-sumi/70">籌備 / 進行中</span>
+            </div>
+            <div class="bg-washi border-ink-sm rounded-2xl p-2.5 text-center shadow-hard-sm">
+              <span class="block text-xl sm:text-2xl font-black text-wakatake" id="stat-completed">2</span>
+              <span class="text-[11px] font-bold text-sumi/70">完成回憶錄</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Travel Suitcase & World Landmarks SVG -->
+        <div class="w-full md:w-2/5 flex justify-center">
+          <div class="w-64 h-56 sm:w-72 sm:h-60 relative">
+            <svg viewBox="0 0 280 240" class="w-full h-full select-none" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Background Sunburst Circle -->
+              <circle cx="140" cy="125" r="100" fill="#FFFCF6" stroke="#3E3A39" stroke-width="3"/>
+              <circle cx="205" cy="60" r="18" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/>
+
+              <!-- Floating Clouds & Airplane -->
+              <g class="anim-cloud">
+                <path d="M35 65C35 59 40 54 46 54C49 48 55 45 62 45C71 45 78 51 80 59C84 60 88 64 88 68C88 73 84 77 78 77H44C39 77 35 73 35 68Z" fill="#A8D3E6" stroke="#3E3A39" stroke-width="2.5"/>
+                <!-- Paper Plane / Jet -->
+                <g transform="translate(105, 32) rotate(-10)">
+                  <path d="M0 14 L42 0 L32 24 L18 17 L12 24 L11 15 Z" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5" stroke-linejoin="round"/>
+                </g>
+              </g>
+
+              <!-- Landmarks sticking out behind the suitcase -->
+              <g class="anim-boat" transform-origin="140 120">
+                <!-- Torii Gate (Left) -->
+                <g transform="translate(52, 82) rotate(-12)">
+                  <path d="M2 10 Q25 4 48 10 L46 16 Q25 11 4 16 Z" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+                  <rect x="8" y="22" width="34" height="5" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+                  <rect x="12" y="15" width="6" height="40" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+                  <rect x="32" y="15" width="6" height="40" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+                </g>
+                <!-- Castle Spire (Center) -->
+                <g transform="translate(116, 64)">
+                  <rect x="10" y="25" width="28" height="40" fill="#A8D3E6" stroke="#3E3A39" stroke-width="2.5"/>
+                  <polygon points="6,25 24,2 42,25" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5" stroke-linejoin="round"/>
+                  <path d="M24 2 L24 -8 L34 -4 L24 0" fill="#F2A497" stroke="#3E3A39" stroke-width="2"/>
+                </g>
+                <!-- Palm Tree / Island (Right) -->
+                <g transform="translate(178, 85) rotate(14)">
+                  <path d="M18 50 Q22 30 16 15" stroke="#3E3A39" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M16 15 Q2 10 0 20 Q10 18 16 15 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+                  <path d="M16 15 Q28 5 35 16 Q24 16 16 15 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+                  <path d="M16 15 Q16 0 26 4 Q20 12 16 15 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+                </g>
+              </g>
+
+              <!-- Main Cute Vintage Suitcase (Bobbing) -->
+              <g class="anim-tram">
+                <!-- Handle -->
+                <path d="M115 125 V110 C115 105 165 105 165 110 V125" stroke="#3E3A39" stroke-width="4" fill="none"/>
+                <!-- Suitcase Body -->
+                <rect x="65" y="122" width="150" height="86" rx="16" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/>
+                <!-- Straps -->
+                <rect x="92" y="122" width="14" height="86" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+                <rect x="174" y="122" width="14" height="86" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+                <!-- Buckles -->
+                <rect x="89" y="155" width="20" height="12" rx="3" fill="#FFFCF6" stroke="#3E3A39" stroke-width="2.5"/>
+                <rect x="171" y="155" width="20" height="12" rx="3" fill="#FFFCF6" stroke="#3E3A39" stroke-width="2.5"/>
+                <!-- Travel Stickers on Suitcase -->
+                <circle cx="138" cy="152" r="14" fill="#A8D3E6" stroke="#3E3A39" stroke-width="2.5"/>
+                <text x="138" y="156" text-anchor="middle" font-size="10" font-weight="900" fill="#3E3A39">HKG</text>
+                <rect x="122" y="174" width="36" height="18" rx="4" transform="rotate(-8 122 174)" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+                <text x="140" y="185" text-anchor="middle" font-size="9" font-weight="900" fill="#3E3A39" transform="rotate(-8 140 185)">PASS</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. FILTER, SEARCH & ADD BAR -->
+    <section id="trips-grid-section" class="space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-xl bg-coral border-ink flex items-center justify-center font-black shadow-hard-sm">🗂️</span>
+          <h2 class="text-2xl font-black">我的旅程繪本書架</h2>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative w-full sm:w-64">
+          <input type="text" id="trip-search" oninput="renderTripsGrid()" placeholder="搜尋目的地、標籤或年份..."
+                 class="w-full pl-9 pr-4 py-2 rounded-2xl bg-white border-ink text-xs sm:text-sm font-bold focus:outline-none focus:bg-washi shadow-hard-sm">
+          <span class="absolute left-3 top-2.5 text-sm">🔍</span>
+        </div>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="setFilter('all')" id="filter-all" class="filter-pill px-4 py-1.5 rounded-full border-ink text-xs sm:text-sm font-black shadow-hard-sm bg-yamabuki transition-all">
+          🌟 全部旅程
+        </button>
+        <button onclick="setFilter('upcoming')" id="filter-upcoming" class="filter-pill px-4 py-1.5 rounded-full border-ink text-xs sm:text-sm font-black shadow-hard-sm bg-white hover:bg-mizu/40 transition-all">
+          ⏳ 籌備 / 即將出發
+        </button>
+        <button onclick="setFilter('completed')" id="filter-completed" class="filter-pill px-4 py-1.5 rounded-full border-ink text-xs sm:text-sm font-black shadow-hard-sm bg-white hover:bg-wakatake/40 transition-all">
+          📔 美好回憶錄
+        </button>
+        <button onclick="openAddModal()" class="ml-auto px-4 py-1.5 rounded-full border-ink text-xs sm:text-sm font-black shadow-hard-sm bg-wakatake hover:bg-coral transition-all flex items-center gap-1">
+          <span>＋ 新增 Notion 行程</span>
+        </button>
+      </div>
+
+      <!-- 3. DYNAMIC TRIPS CARD GRID -->
+      <div id="trips-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <!-- Populated by JavaScript -->
+      </div>
+    </section>
+
+    <!-- 4. HOW TO ADD FUTURE NOTION TRIPS (互動擴充說明卡) -->
+    <section id="guide-section" class="bg-white border-ink rounded-3xl p-5 sm:p-7 shadow-hard space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-[2px] border-dashed border-sumi pb-4">
+        <div class="flex items-center gap-2.5">
+          <span class="w-9 h-9 rounded-2xl bg-mizu border-ink flex items-center justify-center text-lg shadow-hard-sm">💡</span>
+          <div>
+            <h3 class="text-lg sm:text-xl font-black">未來如何新增更多 Notion 行程？</h3>
+            <p class="text-xs text-sumi/70 font-bold">支援兩種方式，手機與電腦都能輕鬆擴充！</p>
+          </div>
+        </div>
+        <button onclick="copyTemplateCode()" class="px-4 py-2 rounded-2xl bg-yamabuki border-ink text-xs font-black shadow-hard-sm hover:-translate-y-0.5 transition-transform self-start sm:self-auto">
+          📋 複製行程資料模板
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+        <div class="bg-washi border-ink-sm rounded-2xl p-4 space-y-2 shadow-hard-sm">
+          <span class="inline-block px-2.5 py-0.5 rounded-full bg-wakatake border-ink-sm font-black text-xs">方法 1：網頁直接新增（最推薦）</span>
+          <p class="font-bold leading-relaxed text-sumi/85">
+            點擊右上角的 <strong>「＋ 新增行程」</strong> 按鈕，貼上您的 Notion 分享連結、輸入標題、日期與選擇插圖主題，網站就會自動產生繪本卡片並儲存在瀏覽器中！還可以匯出備份。
+          </p>
+        </div>
+        <div class="bg-washi border-ink-sm rounded-2xl p-4 space-y-2 shadow-hard-sm">
+          <span class="inline-block px-2.5 py-0.5 rounded-full bg-coral/60 border-ink-sm font-black text-xs">方法 2：請 AI 幫新 Notion 做內頁</span>
+          <p class="font-bold leading-relaxed text-sumi/85">
+            未來有新的 Notion 行程連結時，只需把新連結貼給 AI 並說：<strong>「請幫我在漫遊繪本集新增這個 Notion 行程的專屬內頁」</strong>，就能無限擴充詳細時間軸！
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- ============ VIEW B: HONG KONG FULL ITINERARY (2026 香港夏日漫遊內頁) ============ -->
+  <!-- ========================================================================= -->
+  <main id="view-hk-detail" class="hidden max-w-4xl mx-auto px-4 sm:px-6 space-y-12 sm:space-y-16 mt-6 sm:mt-8 pop-in">
+
+    <!-- Top Breadcrumb & Notion Quick Link Banner -->
+    <div class="bg-yamabuki/40 border-ink rounded-2xl p-3 sm:px-5 flex flex-wrap items-center justify-between gap-2 shadow-hard-sm">
+      <div class="flex items-center gap-2 text-xs sm:text-sm font-black">
+        <button onclick="switchView('portal')" class="underline hover:text-coral">📖 漫遊繪本集</button>
+        <span>▸</span>
+        <span>🇭🇰 2026 香港夏日漫遊 (4天3夜完整繪本)</span>
+      </div>
+      <a href="https://app.notion.com/p/2026-07-25-07-28-00b473536f01820690e181684111bce9?source=copy_link" target="_blank" rel="noopener noreferrer"
+         class="px-3 py-1 rounded-full bg-white border-ink-sm text-xs font-black hover:bg-coral/30 transition-colors flex items-center gap-1 shadow-hard-pressed">
+        <span>🔗 開啟 Notion 原始筆記</span>
+        <span>↗</span>
+      </a>
+    </div>
+
+    <!-- ==================== HK HERO SECTION ==================== -->
+    <section id="hero" class="relative">
+      <div class="bg-white border-ink rounded-[28px] p-5 sm:p-8 shadow-hard relative overflow-hidden">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-3 z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-wakatake border-ink text-xs sm:text-sm font-black shadow-hard-sm">
+              <span>🌿 2026.07.25 — 07.28</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-sumi"></span>
+              <span>4天3夜盛夏旅行</span>
+            </div>
+            
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-snug">
+              2026 香港夏日漫遊 <br class="hidden sm:inline" />
+              <span class="text-coral underline decoration-yamabuki decoration-wavy decoration-2">維港夜景</span>、
+              <span class="text-mizu">迪士尼童話</span>與
+              <span class="text-sumi">老城散策</span>
+            </h1>
+
+            <p class="text-sm sm:text-base font-medium opacity-85 leading-relaxed max-w-lg">
+              手持八達通卡，搭乘叮叮車穿梭於高樓與老招牌之間；在尖沙咀吃一口剛出爐的脆皮菠蘿包，傍晚搭著天星小輪迎著海風看幻彩詠香江！
+            </p>
+
+            <!-- Quick Badges -->
+            <div class="flex flex-wrap gap-2 pt-1">
+              <span class="px-3 py-1 rounded-xl bg-mizu/40 border-ink-sm text-xs font-bold flex items-center gap-1.5">
+                ⛅ 氣溫約 28°C-32°C (夏日晴熱易驟雨)
+              </span>
+              <span class="px-3 py-1 rounded-xl bg-yamabuki/50 border-ink-sm text-xs font-bold flex items-center gap-1.5">
+                💳 八達通 App 已儲值
+              </span>
+              <span class="px-3 py-1 rounded-xl bg-coral/30 border-ink-sm text-xs font-bold flex items-center gap-1.5">
+                🔌 英規三腳轉接頭
+              </span>
+            </div>
+          </div>
+
+          <!-- Hero Illustration (Hand-drawn Vector Style) -->
+          <div class="w-full md:w-80 flex-shrink-0 flex justify-center items-center">
+            <div class="relative w-64 h-56 sm:w-72 sm:h-64">
+              <svg viewBox="0 0 300 260" class="w-full h-full drop-shadow-sm select-none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="150" cy="130" r="115" fill="#FFFCF6" stroke="#3E3A39" stroke-width="3"/>
+                <g class="anim-cloud">
+                  <path d="M50 70C50 63 56 58 63 58C66 52 73 48 81 48C91 48 99 55 101 64C106 65 110 69 110 74C110 80 105 84 99 84H59C54 84 50 80 50 74Z" fill="#FFFFFF" stroke="#3E3A39" stroke-width="3"/>
+                  <path d="M210 50C210 44 215 39 221 39C224 34 230 31 237 31C246 31 253 37 255 45C259 46 262 50 262 54C262 59 258 63 252 63H218C214 63 210 59 210 54Z" fill="#A8D3E6" stroke="#3E3A39" stroke-width="3"/>
+                </g>
+                <g transform="translate(140, 48) rotate(-8)">
+                  <path d="M0 12 L38 0 L45 5 L20 16 L32 20 L33 25 L24 23 L14 32 L8 31 L12 21 L0 18 Z" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5" stroke-linejoin="round"/>
+                  <circle cx="16" cy="15" r="1.5" fill="#FFFFFF"/>
+                </g>
+                <!-- Disneyland Castle Silhouette -->
+                <path d="M110 170 L110 135 L120 120 L130 135 L130 170 Z" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/>
+                <path d="M125 120 L125 110 L120 110" stroke="#3E3A39" stroke-width="2.5"/>
+                <path d="M120 110 L128 106 L128 114 Z" fill="#F2A497" stroke="#3E3A39" stroke-width="2"/>
+                <rect x="95" y="145" width="16" height="25" fill="#FFFCF6" stroke="#3E3A39" stroke-width="2.5"/>
+                <polygon points="95,145 103,130 111,145" fill="#A8D3E6" stroke="#3E3A39" stroke-width="2.5"/>
+                <!-- Hong Kong Skyline -->
+                <polygon points="175,170 188,95 201,170" fill="#A8D3E6" stroke="#3E3A39" stroke-width="3"/>
+                <rect x="150" y="115" width="22" height="55" fill="#B9DAA5" stroke="#3E3A39" stroke-width="3"/>
+                <line x1="161" y1="115" x2="161" y2="170" stroke="#3E3A39" stroke-width="2"/>
+                <!-- Victoria Harbour waves -->
+                <path d="M45 170 C70 165, 90 175, 120 170 C150 165, 180 175, 210 170 C235 165, 255 170, 260 172" stroke="#3E3A39" stroke-width="3" fill="none"/>
+                <path d="M35 185 C65 180, 95 190, 130 185 C165 180, 200 190, 240 185 C255 183, 265 186, 270 188" stroke="#3E3A39" stroke-width="3" fill="none"/>
+                <!-- Star Ferry -->
+                <g class="anim-boat" transform-origin="120 195">
+                  <g transform="translate(70, 175)">
+                    <path d="M0 16 L12 28 H70 L80 16 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="3"/>
+                    <rect x="14" y="6" width="52" height="11" rx="2" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2.5"/>
+                    <rect x="22" y="9" width="8" height="6" fill="#F6D27A" stroke="#3E3A39" stroke-width="1.5"/>
+                    <rect x="36" y="9" width="8" height="6" fill="#F6D27A" stroke="#3E3A39" stroke-width="1.5"/>
+                    <rect x="50" y="9" width="8" height="6" fill="#F6D27A" stroke="#3E3A39" stroke-width="1.5"/>
+                    <circle cx="40" cy="22" r="3" fill="#FFFFFF" stroke="#3E3A39" stroke-width="1.5"/>
+                  </g>
+                </g>
+                <!-- Ding Ding Tram -->
+                <g class="anim-tram" transform-origin="210 220">
+                  <g transform="translate(175, 192)">
+                    <rect x="0" y="0" width="46" height="36" rx="5" fill="#F2A497" stroke="#3E3A39" stroke-width="3"/>
+                    <path d="M12 0 L18 -8 H30 L26 0" stroke="#3E3A39" stroke-width="2.5" fill="none"/>
+                    <rect x="5" y="5" width="10" height="9" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2"/>
+                    <rect x="18" y="5" width="10" height="9" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2"/>
+                    <rect x="31" y="5" width="10" height="9" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2"/>
+                    <rect x="5" y="18" width="14" height="12" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2"/>
+                    <rect x="25" y="18" width="16" height="12" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2"/>
+                    <circle cx="10" cy="37" r="3.5" fill="#3E3A39"/>
+                    <circle cx="36" cy="37" r="3.5" fill="#3E3A39"/>
+                  </g>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== COUNTDOWN CLOCK ==================== -->
+        <div class="mt-8 pt-6 border-t-[3px] border-dashed border-sumi">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span class="w-10 h-10 rounded-2xl bg-coral border-ink flex items-center justify-center text-xl shadow-hard-sm">
+                ⏰
+              </span>
+              <div>
+                <p class="text-xs font-bold text-sumi/70">旅程時間紀錄（2026/07/25 10:50 CX489）</p>
+                <h3 class="text-base sm:text-lg font-black" id="countdown-status">距離夢幻香港出發還有...</h3>
+              </div>
+            </div>
+
+            <!-- Numbers Grid -->
+            <div class="grid grid-cols-4 gap-2 sm:gap-3 text-center w-full sm:w-auto">
+              <div class="bg-washi border-ink px-2.5 py-2 rounded-2xl min-w-[62px] shadow-hard-sm">
+                <span class="block text-xl sm:text-2xl font-black text-coral" id="cd-days">--</span>
+                <span class="text-[10px] font-bold tracking-wider">DAYS</span>
+              </div>
+              <div class="bg-washi border-ink px-2.5 py-2 rounded-2xl min-w-[62px] shadow-hard-sm">
+                <span class="block text-xl sm:text-2xl font-black text-yamabuki" id="cd-hours">--</span>
+                <span class="text-[10px] font-bold tracking-wider">HOURS</span>
+              </div>
+              <div class="bg-washi border-ink px-2.5 py-2 rounded-2xl min-w-[62px] shadow-hard-sm">
+                <span class="block text-xl sm:text-2xl font-black text-mizu" id="cd-mins">--</span>
+                <span class="text-[10px] font-bold tracking-wider">MINS</span>
+              </div>
+              <div class="bg-washi border-ink px-2.5 py-2 rounded-2xl min-w-[62px] shadow-hard-sm">
+                <span class="block text-xl sm:text-2xl font-black text-wakatake" id="cd-secs">--</span>
+                <span class="text-[10px] font-bold tracking-wider">SECS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 3. FLIGHT CARDS ==================== -->
+    <section id="flights" class="space-y-4">
+      <div class="flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-xl bg-coral border-ink flex items-center justify-center font-black shadow-hard-sm">✈️</span>
+        <h2 class="text-2xl font-black">國泰航空來回航班</h2>
+        <span class="text-xs font-bold text-sumi/70 ml-auto bg-white px-2.5 py-1 rounded-full border-ink">已確認訂位</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Outbound Flight -->
+        <div class="bg-white border-ink rounded-3xl p-5 shadow-hard relative overflow-hidden flex flex-col justify-between">
+          <div class="flex items-center justify-between border-b-[2px] border-sumi pb-3 mb-4">
+            <span class="px-2.5 py-0.5 rounded-full bg-coral/30 border-ink-sm text-xs font-black">
+              🛫 去程・Day 1 (07/25 六)
+            </span>
+            <span class="text-xs font-bold bg-washi px-2 py-0.5 rounded-md border-ink-sm">
+              Cathay Pacific CX489
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between my-2">
+            <div>
+              <div class="text-2xl sm:text-3xl font-black">10:50</div>
+              <div class="text-sm font-black">TPE 桃園 T1</div>
+              <div class="text-xs text-sumi/60">台灣桃園國際機場</div>
+            </div>
+
+            <div class="flex flex-col items-center px-2">
+              <span class="text-[11px] font-bold text-coral">1hr 55m</span>
+              <div class="relative w-20 sm:w-28 flex items-center justify-center my-1">
+                <div class="w-full border-b-[2px] border-dashed border-sumi"></div>
+                <span class="absolute bg-white px-1 text-sm">✈</span>
+              </div>
+              <span class="text-[10px] font-bold text-sumi/70">波音 B777-300ER</span>
+            </div>
+
+            <div class="text-right">
+              <div class="text-2xl sm:text-3xl font-black">12:45</div>
+              <div class="text-sm font-black">HKG 香港 T1</div>
+              <div class="text-xs text-sumi/60">香港赤鱲角國際機場</div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t-[2px] border-sumi/20 text-xs font-medium space-y-1 bg-washi/70 p-2.5 rounded-2xl border-ink-sm">
+            <p class="flex items-center gap-1.5 font-bold text-coral">
+              <span>💡</span> 貼心建議：選位建議劃右側靠窗（K排），進香港時有機會俯瞰維港與大嶼山美景！
+            </p>
+          </div>
+        </div>
+
+        <!-- Inbound Flight -->
+        <div class="bg-white border-ink rounded-3xl p-5 shadow-hard relative overflow-hidden flex flex-col justify-between">
+          <div class="flex items-center justify-between border-b-[2px] border-sumi pb-3 mb-4">
+            <span class="px-2.5 py-0.5 rounded-full bg-mizu/40 border-ink-sm text-xs font-black">
+              🛬 回程・Day 4 (07/28 二)
+            </span>
+            <span class="text-xs font-bold bg-washi px-2 py-0.5 rounded-md border-ink-sm">
+              Cathay Pacific CX408
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between my-2">
+            <div>
+              <div class="text-2xl sm:text-3xl font-black">20:30</div>
+              <div class="text-sm font-black">HKG 香港 T1</div>
+              <div class="text-xs text-sumi/60">香港赤鱲角國際機場</div>
+            </div>
+
+            <div class="flex flex-col items-center px-2">
+              <span class="text-[11px] font-bold text-mizu">1hr 50m</span>
+              <div class="relative w-20 sm:w-28 flex items-center justify-center my-1">
+                <div class="w-full border-b-[2px] border-dashed border-sumi"></div>
+                <span class="absolute bg-white px-1 text-sm">✈</span>
+              </div>
+              <span class="text-[10px] font-bold text-sumi/70">空巴 A350-900</span>
+            </div>
+
+            <div class="text-right">
+              <div class="text-2xl sm:text-3xl font-black">22:20</div>
+              <div class="text-sm font-black">TPE 桃園 T1</div>
+              <div class="text-xs text-sumi/60">台灣桃園國際機場</div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t-[2px] border-sumi/20 text-xs font-medium space-y-1 bg-washi/70 p-2.5 rounded-2xl border-ink-sm">
+            <p class="flex items-center gap-1.5 font-bold text-mizu">
+              <span>🧳</span> 行李須知：國泰托運行李 23kg，晚班機可在九龍站提早市區預辦登機托運行李。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 4. DAILY ITINERARY ==================== -->
+    <section id="itinerary" class="space-y-6">
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-xl bg-yamabuki border-ink flex items-center justify-center font-black shadow-hard-sm">🗓️</span>
+            <h2 class="text-2xl font-black">每日探險行程</h2>
+          </div>
+          <span class="text-xs font-bold bg-white px-3 py-1 rounded-full border-ink shadow-hard-sm hidden sm:inline-block">
+            切換查看詳細時間表
+          </span>
+        </div>
+
+        <!-- Day Selector Buttons -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button onclick="switchDay(1)" id="btn-day-1" class="day-tab border-ink rounded-2xl p-3 text-left transition-all shadow-hard bg-yamabuki translate-y-[-2px]">
+            <span class="text-[11px] font-black uppercase tracking-wider block opacity-75">Day 1 • 07/25 (六)</span>
+            <span class="text-base font-black flex items-center gap-1">維港海濱漫步 🌊</span>
+          </button>
+          
+          <button onclick="switchDay(2)" id="btn-day-2" class="day-tab border-ink rounded-2xl p-3 text-left transition-all shadow-hard bg-white hover:bg-mizu/30">
+            <span class="text-[11px] font-black uppercase tracking-wider block opacity-75">Day 2 • 07/26 (日)</span>
+            <span class="text-base font-black flex items-center gap-1">迪士尼童話日 🏰</span>
+          </button>
+          
+          <button onclick="switchDay(3)" id="btn-day-3" class="day-tab border-ink rounded-2xl p-3 text-left transition-all shadow-hard bg-white hover:bg-coral/30">
+            <span class="text-[11px] font-black uppercase tracking-wider block opacity-75">Day 3 • 07/27 (一)</span>
+            <span class="text-base font-black flex items-center gap-1">港島復古散策 🚋</span>
+          </button>
+          
+          <button onclick="switchDay(4)" id="btn-day-4" class="day-tab border-ink rounded-2xl p-3 text-left transition-all shadow-hard bg-white hover:bg-wakatake/30">
+            <span class="text-[11px] font-black uppercase tracking-wider block opacity-75">Day 4 • 07/28 (二)</span>
+            <span class="text-base font-black flex items-center gap-1">老城採買歸途 🛍️</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Timeline Card Area -->
+      <div id="timeline-container" class="bg-white border-ink rounded-3xl p-5 sm:p-8 shadow-hard relative">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ==================== 5. ACCOMMODATION ==================== -->
+    <section id="hotel" class="space-y-4">
+      <div class="flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-xl bg-wakatake border-ink flex items-center justify-center font-black shadow-hard-sm">🏨</span>
+        <h2 class="text-2xl font-black">住宿地點資訊</h2>
+      </div>
+
+      <div class="bg-white border-ink rounded-3xl p-5 sm:p-7 shadow-hard space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-[2px] border-dashed border-sumi pb-5">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-wakatake/50 border-ink-sm text-xs font-black mb-2">
+              ⭐ 連住 3 晚 • 絕佳樞紐
+            </div>
+            <h3 class="text-xl sm:text-2xl font-black">Royal Plaza Hotel 帝京酒店</h3>
+            <p class="text-sm text-sumi/80 font-medium mt-1">香港九龍旺角太子道西 193 號（直通港鐵旺角東站）</p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <a href="https://maps.google.com/?q=Royal+Plaza+Hotel+Hong+Kong" target="_blank" rel="noopener noreferrer"
+               class="px-4 py-2 rounded-2xl bg-yamabuki border-ink text-xs sm:text-sm font-black shadow-hard-sm hover:-translate-y-0.5 transition-transform flex items-center gap-1.5">
+              <span>📍 打開 Google 地圖</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-washi border-ink-sm p-4 rounded-2xl shadow-hard-sm">
+            <span class="text-xs font-bold text-sumi/60 block mb-1">⏰ 入住 / 退房</span>
+            <p class="text-sm font-black">Check-in: 15:00 後</p>
+            <p class="text-sm font-black">Check-out: 11:00 前</p>
+            <p class="text-xs text-sumi/70 mt-1">可免費寄放行李至傍晚</p>
+          </div>
+
+          <div class="bg-washi border-ink-sm p-4 rounded-2xl shadow-hard-sm">
+            <span class="text-xs font-bold text-sumi/60 block mb-1">🚇 交通便捷度</span>
+            <p class="text-sm font-black">港鐵「旺角東站」D出口直通</p>
+            <p class="text-xs text-sumi/70 mt-1">亦可經天橋步行約 8 分鐘抵達港鐵旺角站（荃灣綫／觀塘綫）</p>
+          </div>
+
+          <div class="bg-washi border-ink-sm p-4 rounded-2xl shadow-hard-sm">
+            <span class="text-xs font-bold text-sumi/60 block mb-1">🛍️ 購物與生活機能</span>
+            <p class="text-sm font-black">直通 MOKO 新世紀廣場</p>
+            <p class="text-xs text-sumi/70 mt-1">商場內有一田超市、萬寧、星巴克、眾多排隊美食</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 6. INTERACTIVE CHECKLIST ==================== -->
+    <section id="checklist" class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-xl bg-coral border-ink flex items-center justify-center font-black shadow-hard-sm">✅</span>
+          <h2 class="text-2xl font-black">行前準備與清單</h2>
+        </div>
+        <div class="text-xs font-black bg-white px-3 py-1 rounded-full border-ink shadow-hard-sm">
+          完成度：<span id="progress-percent" class="text-coral">0%</span>
+        </div>
+      </div>
+
+      <div class="bg-white border-ink rounded-3xl p-5 sm:p-7 shadow-hard space-y-6">
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-bold">
+            <span id="progress-text">準備進度計算中...</span>
+            <span id="progress-count">0 / 12</span>
+          </div>
+          <div class="w-full h-3.5 bg-washi border-ink-sm rounded-full overflow-hidden p-0.5">
+            <div id="progress-bar-fill" class="h-full bg-wakatake rounded-full transition-all duration-300" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="space-y-3">
+            <div class="flex items-center gap-1.5 border-b-[2px] border-sumi pb-1.5">
+              <span class="text-base">📑</span>
+              <h4 class="font-black text-sm">必備證件與票券</h4>
+            </div>
+            <div class="space-y-2 text-sm font-bold" id="group-docs"></div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-center gap-1.5 border-b-[2px] border-sumi pb-1.5">
+              <span class="text-base">🎒</span>
+              <h4 class="font-black text-sm">隨身及夏日裝備</h4>
+            </div>
+            <div class="space-y-2 text-sm font-bold" id="group-luggage"></div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-center gap-1.5 border-b-[2px] border-sumi pb-1.5">
+              <span class="text-base">📱</span>
+              <h4 class="font-black text-sm">科技與電子支付</h4>
+            </div>
+            <div class="space-y-2 text-sm font-bold" id="group-apps"></div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-3 border-t-[2px] border-dashed border-sumi">
+          <span class="text-xs text-sumi/60 font-medium">※ 清單會自動記憶在您的瀏覽器，隨時開啟即能更新！</span>
+          <button onclick="resetChecklist()" class="text-xs font-black underline text-coral hover:text-sumi">
+            重設清單
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Back to Portal Button -->
+    <div class="text-center pt-4">
+      <button onclick="switchView('portal')" class="px-6 py-3 rounded-full bg-yamabuki border-ink font-black text-sm sm:text-base shadow-hard hover:-translate-y-0.5 transition-transform inline-flex items-center gap-2">
+        <span>← 返回「漫遊繪本集」所有行程首頁</span>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- ============ VIEW C: CUSTOM TRIP PREVIEW VIEW (其他行程繪本預覽頁) ============ -->
+  <!-- ========================================================================= -->
+  <div id="view-custom-trip" class="hidden max-w-3xl mx-auto px-4 sm:px-6 space-y-8 mt-6 sm:mt-8 pop-in">
+    <div id="custom-trip-content"></div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- ==================== MODAL: ADD NEW NOTION TRIP (+新增行程) ==================== -->
+  <!-- ========================================================================= -->
+  <div id="add-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-sumi/50 p-4 overflow-y-auto">
+    <div class="bg-washi border-ink rounded-3xl max-w-lg w-full p-5 sm:p-7 shadow-hard-lg relative pop-in my-8">
+      <div class="flex items-center justify-between border-b-[2px] border-sumi pb-3 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-wakatake border-ink-sm flex items-center justify-center font-black">＋</span>
+          <h3 class="text-lg sm:text-xl font-black">新增 Notion 旅遊行程卡片</h3>
+        </div>
+        <button onclick="closeAddModal()" class="w-8 h-8 rounded-full bg-white border-ink-sm font-black hover:bg-coral">✕</button>
+      </div>
+
+      <form id="add-trip-form" onsubmit="handleSaveNewTrip(event)" class="space-y-4 text-xs sm:text-sm font-bold">
+        <div>
+          <label class="block mb-1">📖 旅程標題 *</label>
+          <input type="text" id="new-title" required placeholder="例如：2027 東京賞櫻散步 5天4夜"
+                 class="w-full px-3.5 py-2 rounded-xl bg-white border-ink-sm focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block mb-1">📍 目的地 / 國家 *</label>
+            <input type="text" id="new-dest" required placeholder="例如：日本・東京"
+                   class="w-full px-3.5 py-2 rounded-xl bg-white border-ink-sm focus:outline-none">
+          </div>
+          <div>
+            <label class="block mb-1">🗓️ 日期與天數 *</label>
+            <input type="text" id="new-dates" required placeholder="例如：2027.03.28 - 04.01 (5天4夜)"
+                   class="w-full px-3.5 py-2 rounded-xl bg-white border-ink-sm focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block mb-1">🎨 卡片代表色</label>
+            <select id="new-color" class="w-full px-3 py-2 rounded-xl bg-white border-ink-sm focus:outline-none">
+              <option value="coral">🌸 珊瑚粉 (#F2A497)</option>
+              <option value="yamabuki">🌼 山吹黃 (#F6D27A)</option>
+              <option value="mizu">🌊 水色藍 (#A8D3E6)</option>
+              <option value="wakatake">🎋 若竹綠 (#B9DAA5)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-1">🖼️ 手繪插圖主題</label>
+            <select id="new-svg-theme" class="w-full px-3 py-2 rounded-xl bg-white border-ink-sm focus:outline-none">
+              <option value="torii">⛩️ 日本神社與紅梅</option>
+              <option value="coastal">🚋 海濱膠囊列車與大橋</option>
+              <option value="island">🏝️ 陽光海島與椰子樹</option>
+              <option value="hk">🇭🇰 維港小輪與城堡</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block mb-1">🚦 行程狀態</label>
+            <select id="new-status" class="w-full px-3 py-2 rounded-xl bg-white border-ink-sm focus:outline-none">
+              <option value="upcoming">⏳ 籌備 / 即將出發</option>
+              <option value="completed">📔 美好回憶錄</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-1">🏷️ 亮點標籤（空白分隔）</label>
+            <input type="text" id="new-tags" placeholder="#賞櫻 #晴空塔 #拉麵"
+                   class="w-full px-3.5 py-2 rounded-xl bg-white border-ink-sm focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block mb-1">🔗 Notion 行程連結 *</label>
+          <input type="url" id="new-notion" required placeholder="https://app.notion.com/p/..."
+                 class="w-full px-3.5 py-2 rounded-xl bg-white border-ink-sm focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block mb-1">📝 旅程簡介或重點備忘</label>
+          <textarea id="new-summary" rows="2" placeholder="寫下這趟旅程最期待的景點、美食或航班摘要..."
+                    class="w-full px-3.5 py-2 rounded-xl bg-white border-ink-sm focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t-[2px] border-dashed border-sumi">
+          <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-xl bg-white border-ink-sm font-black">取消</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-wakatake border-ink font-black shadow-hard-sm hover:-translate-y-0.5 transition-transform">
+            ✨ 儲存並加入書架
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATION ==================== -->
+  <div id="toast-box" class="fixed bottom-5 right-5 z-50 hidden bg-yamabuki border-ink px-4 py-3 rounded-2xl shadow-hard font-black text-xs sm:text-sm items-center gap-2">
+    <span id="toast-text">已複製！</span>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="pt-12 text-center space-y-2 max-w-4xl mx-auto px-4">
+    <div class="inline-flex items-center justify-center gap-2">
+      <span class="w-7 h-7 rounded-full bg-yamabuki border-ink-sm flex items-center justify-center text-xs">📖</span>
+      <span class="font-black text-sm">漫遊繪本集 • 收藏每一段閃閃發光的旅途</span>
+      <span class="w-7 h-7 rounded-full bg-coral border-ink-sm flex items-center justify-center text-xs">✨</span>
+    </div>
+    <p class="text-xs text-sumi/60 font-medium">
+      日系手繪溫暖繪本風 • 支援 Notion 行程快速擴充與離線記憶
+    </p>
+  </footer>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    // =========================================================================
+    // 1. MASTER TRIPS DATA (預載旅程資料 + 可透過 UI 或此陣列無限擴充)
+    // =========================================================================
+    const DEFAULT_TRIPS = [
+      {
+        id: "hk-2026-summer",
+        title: "2026 香港夏日漫遊",
+        destination: "香港・九龍＆港島",
+        dates: "2026.07.25 — 07.28 (4天3夜)",
+        status: "completed",
+        statusLabel: "★ 內建完整繪本",
+        themeColor: "yamabuki",
+        svgTheme: "hk",
+        tags: ["#維港天星小輪", "#迪士尼魔雪奇緣", "#雙層叮叮車", "#帝京酒店"],
+        notionUrl: "https://app.notion.com/p/2026-07-25-07-28-00b473536f01820690e181684111bce9?source=copy_link",
+        summary: "搭乘國泰航空 CX489/CX408，連住旺角帝京酒店 3 晚。走訪尖沙咀星光大道、全天暢玩香港迪士尼樂園、中環半山手扶梯、Bakehouse 蛋塔與太平山頂百萬夜景！",
+        hasBuiltInPage: true
+      },
+      {
+        id: "busan-2026-autumn",
+        title: "2026 釜山秋日海風漫遊",
+        destination: "韓國・釜山",
+        dates: "2026.11.12 — 11.15 (4天3夜)",
+        status: "upcoming",
+        statusLabel: "⏳ 籌備規劃中",
+        themeColor: "mizu",
+        svgTheme: "coastal",
+        tags: ["#海雲台膠囊列車", "#廣安里無人機秀", "#白淺灘文化村", "#豬肉湯飯"],
+        notionUrl: "https://www.notion.so/",
+        summary: "秋高氣爽的釜山海岸線之旅！預約尾浦藍線公園天空膠囊列車、在廣安里海水浴場看大橋夜景喝咖啡，走訪甘川洞文化村與松島海上纜車。",
+        hasBuiltInPage: false,
+        highlights: [
+          "Day 1：抵達金海機場 ➔ 廣安里海景飯店 Check-in ➔ 廣安大橋夜間散步＆烤蛤蠣",
+          "Day 2：海雲台藍線公園「天空膠囊列車」➔ 青沙浦紅白燈塔 ➔ 海東龍宮寺 ➔ 新世界汗蒸幕",
+          "Day 3：甘川洞文化村小王子彩繪巷 ➔ 白淺灘文化村海景咖啡廳 ➔ 札嘎其市場海鮮大餐",
+          "Day 4：西面地下街美妝伴手禮採買 ➔ 味贊王鹽烤肉 ➔ 平安賦歸"
+        ]
+      },
+      {
+        id: "fukuoka-2026-spring",
+        title: "2026 福岡太宰府初春旅",
+        destination: "日本・九州福岡",
+        dates: "2026.02.14 — 02.17 (4天3夜)",
+        status: "completed",
+        statusLabel: "📔 美好回憶錄",
+        themeColor: "coral",
+        svgTheme: "torii",
+        tags: ["#太宰府天滿宮", "#現烤梅枝餅", "#由布院之森", "#博多屋台拉麵"],
+        notionUrl: "https://www.notion.so/",
+        summary: "初春微涼的九州鐵道與神社散策。參拜太宰府天滿宮欣賞飛梅與隈研吾星巴克，搭乘由布院之森觀光列車泡湯，夜晚在中洲屋台吃豚骨拉麵！",
+        hasBuiltInPage: false,
+        highlights: [
+          "Day 1：抵達福岡機場（地鐵10分鐘直達博多！）➔ 博多牛腸鍋晚餐 ➔ 中洲屋台街體驗",
+          "Day 2：太宰府天滿宮參道散步 ➔ 隈研吾設計木構星巴克＆現烤梅枝餅 ➔ 天神地下街購物",
+          "Day 3：人氣觀光列車「由布院之森」➔ 湯之坪街道甜點巡禮 ➔ 金鱗湖晨霧與溫泉",
+          "Day 4：系島夫婦岩白色鳥居 ➔ 博多運河城伴手禮（明太子仙貝、まんとく草莓）➔ 返台"
+        ]
+      }
+    ];
+
+    const TRIPS_STORAGE_KEY = "manyou_portal_custom_trips_v1";
+    let currentFilter = "all";
+
+    // Get custom trips from localStorage
+    function getCustomTrips() {
+      try {
+        const raw = localStorage.getItem(TRIPS_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveCustomTrips(list) {
+      try {
+        localStorage.setItem(TRIPS_STORAGE_KEY, JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    function getAllTrips() {
+      return [...DEFAULT_TRIPS, ...getCustomTrips()];
+    }
+
+    // =========================================================================
+    // 2. CUSTOM HAND-DRAWN SVG ILLUSTRATIONS FOR TRIP CARDS
+    // =========================================================================
+    function getCardCoverSVG(theme) {
+      if (theme === "hk") {
+        return `
+          <svg viewBox="0 0 260 115" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="260" height="115" fill="#FFFCF6"/>
+            <circle cx="220" cy="30" r="16" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+            <!-- Clouds -->
+            <path d="M25 32 C25 27 30 24 35 24 C38 19 45 19 49 24 C54 24 58 28 58 32 Z" fill="#A8D3E6" stroke="#3E3A39" stroke-width="2"/>
+            <!-- Castle & Skyline -->
+            <polygon points="150,92 160,38 170,92" fill="#A8D3E6" stroke="#3E3A39" stroke-width="2.5"/>
+            <rect x="125" y="52" width="20" height="40" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+            <polygon points="88,92 88,62 98,46 108,62 108,92" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+            <!-- Star Ferry -->
+            <g class="anim-boat">
+              <path d="M35 80 L43 92 H92 L100 80 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+              <rect x="46" y="70" width="40" height="10" rx="2" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2"/>
+            </g>
+            <!-- Ding Ding Tram -->
+            <g class="anim-tram" transform="translate(182, 56)">
+              <rect x="0" y="0" width="34" height="34" rx="4" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+              <rect x="5" y="5" width="10" height="8" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2"/>
+              <rect x="19" y="5" width="10" height="8" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2"/>
+              <rect x="5" y="17" width="24" height="10" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2"/>
+            </g>
+            <!-- Waves -->
+            <path d="M10 92 Q45 86 80 92 T150 92 T250 92" stroke="#3E3A39" stroke-width="2.5" fill="none"/>
+          </svg>
+        `;
+      } else if (theme === "coastal") {
+        // Busan Sky Capsule & Gwangan Bridge
+        return `
+          <svg viewBox="0 0 260 115" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="260" height="115" fill="#FFFCF6"/>
+            <circle cx="42" cy="30" r="15" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+            <!-- Suspension Bridge in background -->
+            <path d="M110 92 L125 48 L135 92 M185 92 L200 48 L210 92" stroke="#3E3A39" stroke-width="2.5"/>
+            <path d="M95 72 Q162 40 230 72" stroke="#3E3A39" stroke-width="2" fill="none"/>
+            <line x1="90" y1="74" x2="235" y2="74" stroke="#3E3A39" stroke-width="2.5"/>
+            <!-- Elevated Track -->
+            <line x1="15" y1="68" x2="135" y2="68" stroke="#3E3A39" stroke-width="3"/>
+            <line x1="40" y1="68" x2="40" y2="95" stroke="#3E3A39" stroke-width="2.5"/>
+            <line x1="100" y1="68" x2="100" y2="95" stroke="#3E3A39" stroke-width="2.5"/>
+            <!-- Cute Sky Capsule Train -->
+            <g class="anim-tram" transform="translate(48, 34)">
+              <rect x="0" y="0" width="48" height="30" rx="10" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+              <rect x="6" y="6" width="15" height="13" rx="3" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2"/>
+              <rect x="27" y="6" width="15" height="13" rx="3" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2"/>
+              <circle cx="12" cy="32" r="3" fill="#3E3A39"/>
+              <circle cx="36" cy="32" r="3" fill="#3E3A39"/>
+            </g>
+            <!-- Waves -->
+            <path d="M10 95 Q55 88 100 95 T190 95 T250 95" stroke="#3E3A39" stroke-width="2.5" fill="none"/>
+          </svg>
+        `;
+      } else if (theme === "torii") {
+        // Japan Torii Gate & Plum Blossoms
+        return `
+          <svg viewBox="0 0 260 115" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="260" height="115" fill="#FFFCF6"/>
+            <circle cx="195" cy="55" r="32" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+            <!-- Mt / Hills -->
+            <path d="M130 96 Q180 50 245 96 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+            <!-- Torii Gate -->
+            <g class="anim-tram" transform="translate(55, 22)">
+              <path d="M0 12 Q40 4 80 12 L76 20 Q40 14 4 20 Z" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+              <rect x="12" y="28" width="56" height="7" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+              <rect x="18" y="19" width="8" height="55" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+              <rect x="54" y="19" width="8" height="55" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+              <rect x="35" y="19" width="10" height="10" fill="#F6D27A" stroke="#3E3A39" stroke-width="2"/>
+            </g>
+            <!-- Cute Plum Blossom Dots -->
+            <circle cx="35" cy="40" r="6" fill="#F2A497" stroke="#3E3A39" stroke-width="2"/>
+            <circle cx="155" cy="32" r="5" fill="#F2A497" stroke="#3E3A39" stroke-width="2"/>
+            <line x1="15" y1="96" x2="245" y2="96" stroke="#3E3A39" stroke-width="2.5"/>
+          </svg>
+        `;
+      } else {
+        // Sunny Island & Palm Tree
+        return `
+          <svg viewBox="0 0 260 115" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="260" height="115" fill="#FFFCF6"/>
+            <circle cx="55" cy="36" r="18" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+            <path d="M75 94 Q130 62 185 94 Z" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+            <g class="anim-boat" transform="translate(120, 24)">
+              <path d="M12 52 Q18 28 10 12" stroke="#3E3A39" stroke-width="4" stroke-linecap="round"/>
+              <path d="M10 12 Q-8 8 -10 20 Q2 16 10 12 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+              <path d="M10 12 Q26 4 32 16 Q20 16 10 12 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+            </g>
+            <path d="M15 94 Q70 86 130 94 T245 94" stroke="#3E3A39" stroke-width="2.5" fill="none"/>
+          </svg>
+        `;
+      }
+    }
+
+    // =========================================================================
+    // 3. RENDER PORTAL TRIPS GRID & STATS
+    // =========================================================================
+    function setFilter(filterType) {
+      currentFilter = filterType;
+      ['all', 'upcoming', 'completed'].forEach(f => {
+        const btn = document.getElementById(`filter-${f}`);
+        if (f === filterType) {
+          btn.className = "filter-pill px-4 py-1.5 rounded-full border-ink text-xs sm:text-sm font-black shadow-hard-sm bg-yamabuki -translate-y-0.5 transition-all";
+        } else {
+          btn.className = "filter-pill px-4 py-1.5 rounded-full border-ink text-xs sm:text-sm font-black shadow-hard-sm bg-white hover:bg-yamabuki/30 transition-all";
+        }
+      });
+      renderTripsGrid();
+    }
+
+    function renderTripsGrid() {
+      const allTrips = getAllTrips();
+      const query = (document.getElementById('trip-search')?.value || '').trim().toLowerCase();
+
+      // Update Hero Counters
+      document.getElementById('stat-total').innerText = allTrips.length;
+      document.getElementById('stat-upcoming').innerText = allTrips.filter(t => t.status === 'upcoming').length;
+      document.getElementById('stat-completed').innerText = allTrips.filter(t => t.status === 'completed').length;
+
+      const filtered = allTrips.filter(trip => {
+        const matchStatus = currentFilter === 'all' || trip.status === currentFilter;
+        const matchQuery = !query ||
+          trip.title.toLowerCase().includes(query) ||
+          trip.destination.toLowerCase().includes(query) ||
+          trip.dates.toLowerCase().includes(query) ||
+          (trip.tags && trip.tags.join(' ').toLowerCase().includes(query));
+        return matchStatus && matchQuery;
+      });
+
+      const grid = document.getElementById('trips-grid');
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full bg-white border-ink rounded-3xl p-8 text-center space-y-3 shadow-hard">
+            <span class="text-4xl block">🧭</span>
+            <p class="font-black text-lg">找不到符合條件的旅程繪本</p>
+            <p class="text-xs text-sumi/70 font-bold">試著切換篩選標籤，或點選右上角「＋ 新增行程」建立第一本新旅程吧！</p>
+          </div>
+        `;
+        return;
+      }
+
+      const colorMap = {
+        coral: 'bg-coral',
+        yamabuki: 'bg-yamabuki',
+        mizu: 'bg-mizu',
+        wakatake: 'bg-wakatake'
+      };
+
+      grid.innerHTML = filtered.map(trip => {
+        const badgeBg = colorMap[trip.themeColor] || 'bg-yamabuki';
+        const isCustom = !DEFAULT_TRIPS.some(d => d.id === trip.id);
+
+        return `
+          <article class="bg-white border-ink rounded-[26px] overflow-hidden shadow-hard flex flex-col justify-between hover:-translate-y-1 transition-transform">
+            <div>
+              <!-- Top SVG Banner -->
+              <div class="h-32 border-b-[3px] border-sumi relative overflow-hidden bg-washi">
+                ${getCardCoverSVG(trip.svgTheme)}
+                <div class="absolute top-3 left-3 flex items-center gap-1.5">
+                  <span class="px-2.5 py-0.5 rounded-full ${badgeBg} border-ink-sm text-[11px] font-black shadow-hard-pressed">
+                    📍 ${trip.destination}
+                  </span>
+                </div>
+                <div class="absolute top-3 right-3 flex items-center gap-1.5">
+                  <span class="px-2.5 py-0.5 rounded-full bg-white border-ink-sm text-[11px] font-black shadow-hard-pressed">
+                    ${trip.statusLabel || (trip.status === 'upcoming' ? '⏳ 籌備中' : '📔 回憶錄')}
+                  </span>
+                  ${isCustom ? `
+                    <button onclick="deleteCustomTrip('${trip.id}')" title="刪除此自訂行程" class="w-6 h-6 rounded-full bg-coral border-ink-sm text-xs font-black flex items-center justify-center hover:bg-sumi hover:text-white">
+                      ✕
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+
+              <!-- Card Body -->
+              <div class="p-5 space-y-3">
+                <div class="text-xs font-black text-sumi/70 flex items-center gap-1.5">
+                  <span>🗓️ ${trip.dates}</span>
+                </div>
+
+                <h3 class="text-xl font-black leading-snug">${trip.title}</h3>
+
+                <p class="text-xs sm:text-sm font-medium text-sumi/80 leading-relaxed line-clamp-3">
+                  ${trip.summary || '點擊下方按鈕開啟詳細行程與 Notion 筆記連結！'}
+                </p>
+
+                <!-- Tags -->
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                  ${(trip.tags || []).map(tag => `
+                    <span class="px-2 py-0.5 rounded-lg bg-washi border-ink-sm text-[11px] font-bold">
+                      ${tag}
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Footer Actions -->
+            <div class="px-5 pb-5 pt-3 border-t-[2px] border-dashed border-sumi/30 flex items-center gap-2.5">
+              ${trip.hasBuiltInPage ? `
+                <button onclick="openTripDetail('${trip.id}')" class="flex-1 py-2.5 px-3 rounded-2xl bg-yamabuki border-ink text-xs sm:text-sm font-black shadow-hard-sm hover:-translate-y-0.5 transition-transform flex items-center justify-center gap-1.5">
+                  <span>📖 開啟完整繪本行程</span>
+                </button>
+              ` : `
+                <button onclick="openTripDetail('${trip.id}')" class="flex-1 py-2.5 px-3 rounded-2xl bg-mizu/60 hover:bg-mizu border-ink text-xs sm:text-sm font-black shadow-hard-sm hover:-translate-y-0.5 transition-transform flex items-center justify-center gap-1.5">
+                  <span>🔍 預覽重點大綱</span>
+                </button>
+              `}
+              <a href="${trip.notionUrl}" target="_blank" rel="noopener noreferrer"
+                 class="py-2.5 px-3.5 rounded-2xl bg-white hover:bg-coral/40 border-ink text-xs sm:text-sm font-black shadow-hard-sm hover:-translate-y-0.5 transition-transform flex items-center justify-center gap-1"
+                 title="開啟 Notion 原始頁面">
+                <span>Notion</span>
+                <span>↗</span>
+              </a>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 4. VIEW SWITCHER (總覽首頁 <-> 香港詳細內頁 <-> 其他行程預覽)
+    // =========================================================================
+    function switchView(viewName) {
+      const portalEl = document.getElementById('view-portal');
+      const hkDetailEl = document.getElementById('view-hk-detail');
+      const customTripEl = document.getElementById('view-custom-trip');
+      const backBtn = document.getElementById('nav-back-btn');
+      const portalNav = document.getElementById('portal-nav');
+      const detailNav = document.getElementById('detail-nav');
+      const headerTitle = document.getElementById('header-title');
+      const headerSub = document.getElementById('header-subtitle');
+
+      portalEl.classList.add('hidden');
+      hkDetailEl.classList.add('hidden');
+      customTripEl.classList.add('hidden');
+
+      if (viewName === 'portal') {
+        portalEl.classList.remove('hidden');
+        backBtn.classList.add('hidden');
+        backBtn.classList.remove('inline-flex');
+        portalNav.classList.remove('hidden');
+        portalNav.classList.add('flex');
+        detailNav.classList.add('hidden');
+        detailNav.classList.remove('flex');
+        headerTitle.innerText = '漫遊繪本集';
+        headerSub.innerText = 'All Notion Trips Portal';
+        renderTripsGrid();
+      } else if (viewName === 'hk-detail') {
+        hkDetailEl.classList.remove('hidden');
+        backBtn.classList.remove('hidden');
+        backBtn.classList.add('inline-flex');
+        portalNav.classList.add('hidden');
+        portalNav.classList.remove('flex');
+        detailNav.classList.remove('hidden');
+        detailNav.classList.add('flex');
+        headerTitle.innerText = '香港夏日漫遊';
+        headerSub.innerText = '2026.07.25 - 07.28 (4天3夜)';
+      } else if (viewName === 'custom-trip') {
+        customTripEl.classList.remove('hidden');
+        backBtn.classList.remove('hidden');
+        backBtn.classList.add('inline-flex');
+        portalNav.classList.add('hidden');
+        portalNav.classList.remove('flex');
+        detailNav.classList.add('hidden');
+        detailNav.classList.remove('flex');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openTripDetail(tripId) {
+      if (tripId === 'hk-2026-summer') {
+        switchView('hk-detail');
+        return;
+      }
+
+      const trip = getAllTrips().find(t => t.id === tripId);
+      if (!trip) return;
+
+      document.getElementById('header-title').innerText = trip.title;
+      document.getElementById('header-subtitle').innerText = trip.dates;
+
+      const container = document.getElementById('custom-trip-content');
+      const highlightsList = (trip.highlights && trip.highlights.length > 0)
+        ? trip.highlights.map(h => `
+            <div class="bg-washi border-ink-sm rounded-2xl p-4 shadow-hard-sm font-bold text-xs sm:text-sm flex items-start gap-2.5">
+              <span class="text-coral font-black">★</span>
+              <span>${h}</span>
+            </div>
+          `).join('')
+        : `
+          <div class="bg-washi border-ink-sm rounded-2xl p-4 shadow-hard-sm text-xs sm:text-sm font-bold text-sumi/80">
+            此行程目前以 Notion 筆記為主，點擊下方「開啟 Notion 原始行程頁」即可查看完整內容！
+          </div>
+        `;
+
+      container.innerHTML = `
+        <div class="bg-white border-ink rounded-[28px] overflow-hidden shadow-hard space-y-6 pb-8">
+          <div class="h-44 border-b-[3px] border-sumi bg-washi relative">
+            ${getCardCoverSVG(trip.svgTheme)}
+            <span class="absolute bottom-3 left-4 px-3 py-1 rounded-full bg-yamabuki border-ink-sm text-xs font-black shadow-hard-sm">
+              📍 ${trip.destination} • ${trip.dates}
+            </span>
+          </div>
+
+          <div class="px-5 sm:px-8 space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b-[2px] border-dashed border-sumi pb-4">
+              <div>
+                <h1 class="text-2xl sm:text-3xl font-black">${trip.title}</h1>
+                <div class="flex flex-wrap gap-1.5 mt-2">
+                  ${(trip.tags || []).map(t => `<span class="px-2.5 py-0.5 rounded-lg bg-washi border-ink-sm text-xs font-bold">${t}</span>`).join('')}
+                </div>
+              </div>
+              <a href="${trip.notionUrl}" target="_blank" rel="noopener noreferrer"
+                 class="px-5 py-2.5 rounded-2xl bg-coral border-ink font-black text-xs sm:text-sm shadow-hard-sm hover:-translate-y-0.5 transition-transform inline-flex items-center gap-1.5">
+                <span>🔗 開啟 Notion 完整筆記</span>
+                <span>↗</span>
+              </a>
+            </div>
+
+            <div class="space-y-2">
+              <h3 class="text-base font-black">📖 旅程概要</h3>
+              <p class="text-sm font-medium text-sumi/85 leading-relaxed">${trip.summary || '尚無簡介'}</p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-base font-black">🗓️ 行程重點一覽</h3>
+              <div class="space-y-2.5">
+                ${highlightsList}
+              </div>
+            </div>
+
+            <div class="pt-4 border-t-[2px] border-dashed border-sumi flex flex-wrap items-center justify-between gap-3">
+              <button onclick="switchView('portal')" class="px-5 py-2.5 rounded-full bg-yamabuki border-ink font-black text-xs sm:text-sm shadow-hard-sm">
+                ← 返回所有行程書架
+              </button>
+              <span class="text-xs font-bold text-sumi/60">💡 若想將此行程也做成跟香港一樣的互動時間軸，隨時把 Notion 貼給 AI 即可擴充！</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      switchView('custom-trip');
+    }
+
+    // =========================================================================
+    // 5. ADD / DELETE CUSTOM NOTION TRIP MODAL LOGIC
+    // =========================================================================
+    function openAddModal() {
+      const m = document.getElementById('add-modal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function closeAddModal() {
+      const m = document.getElementById('add-modal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function handleSaveNewTrip(e) {
+      e.preventDefault();
+      const title = document.getElementById('new-title').value.trim();
+      const destination = document.getElementById('new-dest').value.trim();
+      const dates = document.getElementById('new-dates').value.trim();
+      const themeColor = document.getElementById('new-color').value;
+      const svgTheme = document.getElementById('new-svg-theme').value;
+      const status = document.getElementById('new-status').value;
+      const rawTags = document.getElementById('new-tags').value.trim();
+      const notionUrl = document.getElementById('new-notion').value.trim();
+      const summary = document.getElementById('new-summary').value.trim();
+
+      const tags = rawTags
+        ? rawTags.split(/\s+/).map(t => t.startsWith('#') ? t : `#${t}`)
+        : ['#Notion行程', '#美好旅途'];
+
+      const newTrip = {
+        id: 'trip-' + Date.now(),
+        title,
+        destination,
+        dates,
+        status,
+        statusLabel: status === 'upcoming' ? '⏳ 籌備規劃中' : '📔 美好回憶錄',
+        themeColor,
+        svgTheme,
+        tags,
+        notionUrl,
+        summary: summary || '已連結 Notion 旅遊筆記，點擊按鈕即可隨時查看行程細節！',
+        hasBuiltInPage: false
+      };
+
+      const customList = getCustomTrips();
+      customList.unshift(newTrip);
+      saveCustomTrips(customList);
+
+      document.getElementById('add-trip-form').reset();
+      closeAddModal();
+      switchView('portal');
+      showToast('🎉 已成功將新 Notion 行程加入繪本書架！');
+    }
+
+    function deleteCustomTrip(id) {
+      const customList = getCustomTrips().filter(t => t.id !== id);
+      saveCustomTrips(customList);
+      renderTripsGrid();
+      showToast('🗑️ 已移除該自訂行程卡片');
+    }
+
+    function copyTemplateCode() {
+      const templateStr = `{
+  id: "new-trip-2027",
+  title: "2027 新旅程標題",
+  destination: "國家・城市",
+  dates: "2027.05.01 — 05.05 (5天4夜)",
+  status: "upcoming",
+  statusLabel: "⏳ 籌備規劃中",
+  themeColor: "wakatake",
+  svgTheme: "torii",
+  tags: ["#必去景點", "#在地美食"],
+  notionUrl: "https://app.notion.com/p/你的Notion連結",
+  summary: "行程重點摘要說明...",
+  hasBuiltInPage: false
+}`;
+      const tempInput = document.createElement('textarea');
+      tempInput.value = templateStr;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showToast('📋 已複製 JSON 模板！可貼入 DEFAULT_TRIPS 陣列中');
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById('toast-box');
+      document.getElementById('toast-text').innerText = msg;
+      box.classList.remove('hidden');
+      box.classList.add('flex');
+      setTimeout(() => {
+        box.classList.add('hidden');
+        box.classList.remove('flex');
+      }, 3200);
+    }
+
+    // =========================================================================
+    // 6. HONG KONG 4-DAY ITINERARY DATA & LOGIC (完整保留並整合)
+    // =========================================================================
+    const ITINERARY_DATA = {
+      1: {
+        title: "Day 1 (07/25 六)：抵港啟程・維港繁華初相遇",
+        badge: "維港海岸線 ⛵",
+        summary: "飛抵香港赤鱲角，搭乘機場快綫進城，午後漫步尖沙咀海濱，品嚐富豪雪糕，迎著海風搭乘百年天星小輪，夜晚飽覽幻彩詠香江璀璨夜景！",
+        events: [
+          {
+            time: "10:50 - 12:45",
+            title: "國泰航空 CX489 飛抵香港國際機場",
+            desc: "降落赤鱲角機場 T1，出關、提領行李，在機場領取實體八達通／設定 eSIM 網路，順便去 7-Eleven 買罐凍檸茶！",
+            transport: { type: "飛機", color: "bg-coral" },
+            isMust: false
+          },
+          {
+            time: "13:30 - 14:30",
+            title: "搭乘機場快綫 ➔ 旺角帝京酒店辦理 Check-in",
+            desc: "搭乘機場快綫抵達九龍站（約22分鐘），轉搭計程車或港鐵抵達旺角帝京酒店。先寄放大件行李、稍作整頓補水。",
+            transport: { type: "機場快綫 + 港鐵", color: "bg-mizu" },
+            isMust: false
+          },
+          {
+            time: "15:00 - 16:30",
+            title: "尖沙咀海濱長廊散策 ＆ 富豪雪糕車",
+            desc: "沿著尖沙咀海濱散步，遠眺港島高聳摩天樓群。偶遇紅白藍相間的經典「富豪雪糕車」，來一支濃郁香滑的香草軟雪糕（HK$13）！",
+            transport: { type: "港鐵 / 步行", color: "bg-yamabuki" },
+            isMust: false
+          },
+          {
+            time: "16:45 - 18:00",
+            title: "搭乘百年歷史「天星小輪」穿梭維多利亞港",
+            desc: "由尖沙咀碼頭搭乘天星小輪前往中環或灣仔（上層視野超開闊，只要幾塊港幣），吹拂夏日海風，體會國家地理雜誌推薦的「人生五十個必到景點」。",
+            transport: { type: "天星小輪", color: "bg-wakatake" },
+            isMust: true
+          },
+          {
+            time: "18:30 - 19:45",
+            title: "尖沙咀在地晚餐：廣式燒味雙拼 or 港式茶餐廳",
+            desc: "品嚐脆皮燒鵝、蜜汁叉燒與絲襪奶茶，外加一份剛出爐的菠蘿油！",
+            transport: { type: "步行", color: "bg-yamabuki" },
+            isMust: false
+          },
+          {
+            time: "20:00 - 20:30",
+            title: "星光大道「幻彩詠香江」大型燈光音樂匯演",
+            desc: "維港兩岸逾40棟摩天大樓隨音樂節奏投射絢爛雷射光束與燈光，近距離與李小龍銅像及麥兜手印合照留念。",
+            transport: { type: "步行", color: "bg-yamabuki" },
+            isMust: true
+          },
+          {
+            time: "21:30",
+            title: "漫步旺角女人街／返抵帝京酒店休息",
+            desc: "回旺角逛逛夜市小攤、買盒道地咖哩魚蛋回房當宵夜，儲備體力迎接明天的迪士尼童話！",
+            transport: { type: "港鐵", color: "bg-mizu" },
+            isMust: false
+          }
+        ]
+      },
+      2: {
+        title: "Day 2 (07/26 日)：夢幻童話・香港迪士尼樂園全日探索",
+        badge: "魔雪奇緣 ❄️",
+        summary: "搭乘米奇車窗的迪士尼彩繪列車，整日沉浸在奇幻樂園中！搶先朝聖全球首座「魔雪奇緣世界」，晚上欣賞奇妙夢想城堡的光影煙火盛宴！",
+        events: [
+          {
+            time: "08:30 - 09:45",
+            title: "早餐後出發：搭乘港鐵迪士尼綫彩繪列車",
+            desc: "從旺角東出發經欣澳站轉乘「迪士尼綫」，車廂滿是米奇造型車窗與經典迪士尼人物青銅雕像，一上車就開啟童心！",
+            transport: { type: "港鐵迪士尼綫", color: "bg-mizu" },
+            isMust: false
+          },
+          {
+            time: "10:00 - 13:00",
+            title: "直奔全球首座「魔雪奇緣世界 World of Frozen」",
+            desc: "步入艾倫戴爾王國！搭乘「魔雪奇幻之旅」小船穿梭愛莎的冰雪皇宮，再體驗刺激歡樂的「雪嶺滑雪橇」過山車！",
+            transport: { type: "園區漫步", color: "bg-yamabuki" },
+            isMust: true
+          },
+          {
+            time: "13:00 - 14:00",
+            title: "園區特色午餐 ＆ 買可愛米奇頭箍、紀念周邊",
+            desc: "在阿德爾港畔餐廳享用北歐風味肉丸與海鮮燉鍋，或在火箭餐廳吃炸雞堡，戴上最新款達菲家族髮箍拍照。",
+            transport: { type: "園區漫步", color: "bg-yamabuki" },
+            isMust: false
+          },
+          {
+            time: "14:30 - 18:00",
+            title: "經典必玩園區：灰熊山谷、迷離莊園、明日世界",
+            desc: "「灰熊山極速礦車」倒退衝刺超刺激；全球獨家「迷離大宅」特效精采絕倫；熱血挑戰「星戰極速穿梭」與鐵甲奇俠飛行之旅！",
+            transport: { type: "園區漫步", color: "bg-yamabuki" },
+            isMust: true
+          },
+          {
+            time: "18:30 - 20:00",
+            title: "美國小鎮大街散步、傍晚氛圍燈光秀",
+            desc: "挑選紀念品伴手禮、達菲熊爆米花桶，並在小鎮大街卡位等待城堡夜間大秀。",
+            transport: { type: "園區漫步", color: "bg-yamabuki" },
+            isMust: false
+          },
+          {
+            time: "20:30 - 21:00",
+            title: "奇妙夢想城堡「迪士尼星夢光影之旅」夜間匯演",
+            desc: "絕不可錯過的壓軸！結合立體光雕投影、水幕、噴泉、雷射與璀璨煙火，配上動人迪士尼名曲，感動滿滿！",
+            transport: { type: "城堡前方觀賞", color: "bg-coral" },
+            isMust: true
+          },
+          {
+            time: "21:30 - 22:30",
+            title: "搭乘港鐵心滿意足返抵飯店",
+            desc: "回飯店放鬆雙腿、貼上休足時間，今晚夢裡都是艾莎與米奇！",
+            transport: { type: "港鐵", color: "bg-mizu" },
+            isMust: false
+          }
+        ]
+      },
+      3: {
+        title: "Day 3 (07/27 一)：港島風華・文青老城散策與太平山頂",
+        badge: "叮叮車與山頂纜車 🚠",
+        summary: "漫步中環半山手扶梯、參觀歷史建築大館、咬一口排隊排到爆的 Bakehouse 焦糖酥皮蛋塔；下午搭雙層叮叮車，傍晚登太平山頂俯瞰百萬夜景！",
+        events: [
+          {
+            time: "09:00 - 10:30",
+            title: "中環早午餐：中環半山自動扶手電梯體驗",
+            desc: "搭乘全球最長的戶外有蓋電扶梯系統（《重慶森林》經典取景地），沿途俯瞰中環街道風貌，品嚐蘭芳園絲襪奶茶與蔥油雞扒撈丁。",
+            transport: { type: "半山扶梯 / 步行", color: "bg-yamabuki" },
+            isMust: false
+          },
+          {
+            time: "10:45 - 12:30",
+            title: "大館（舊中區警署）古蹟文創園區巡禮",
+            desc: "由百年警署、監獄改建的歷史文藝地標，紅磚外牆與當代建築交錯，氣質典雅好拍，內部展示昔日香港故事。",
+            transport: { type: "步行", color: "bg-yamabuki" },
+            isMust: false
+          },
+          {
+            time: "12:45 - 13:45",
+            title: "Bakehouse 爆漿酸種蛋塔 ＆ 九記牛腩",
+            desc: "朝聖熱騰騰剛出爐的酸種焦糖蛋塔（酥脆層次感無敵！），午餐可選濃郁的清湯牛腩或咖哩牛筋腩麵。",
+            transport: { type: "步行", color: "bg-coral" },
+            isMust: true
+          },
+          {
+            time: "14:15 - 15:45",
+            title: "搭乘雙層「叮叮車」悠遊中環 ➔ 灣仔 ➔ 銅鑼灣",
+            desc: "坐在叮叮車上層第一排，看著軌道穿過招牌林立的街道，體驗時速15公里的慢節奏香港浪漫，只要 HK$3 便能遊歷港島繁華。",
+            transport: { type: "香港電車(叮叮車)", color: "bg-coral" },
+            isMust: true
+          },
+          {
+            time: "16:30 - 19:30",
+            title: "搭乘第六代綠色復古「山頂纜車」登上太平山頂",
+            desc: "全新第六代山頂纜車車廂通透開闊，沿著陡峭斜坡攀升！登上「凌霄閣摩天台 428」，從日落時分守候到華燈初上的世界級百萬夜景！",
+            transport: { type: "山頂纜車", color: "bg-wakatake" },
+            isMust: true
+          },
+          {
+            time: "20:30 - 22:00",
+            title: "下山前往廟街夜市／旺角大排檔吃煲仔飯",
+            desc: "來一煲焦香脆口炭火煲仔飯（窩蛋牛肉／臘味），配上一盤香炒花甲，地道港味十足！",
+            transport: { type: "雙層巴士 / 港鐵", color: "bg-mizu" },
+            isMust: false
+          }
+        ]
+      },
+      4: {
+        title: "Day 4 (07/28 二)：舊城記憶・伴手禮採買與平安歸途",
+        badge: "回甘旅程 🍪",
+        summary: "最後一天悠哉享受金華冰廳得獎菠蘿油，採買珍妮曲奇聰明小熊餅乾與檸檬王，到九龍站預辦登機，晚上搭乘國泰 CX408 滿載美好回憶回台灣！",
+        events: [
+          {
+            time: "09:00 - 10:15",
+            title: "金華冰廳：全港第一「得獎菠蘿油」晨光美味",
+            desc: "距離飯店步行只需數分鐘！現烤出爐的熱騰騰酥皮菠蘿包，夾上一整片冰涼牛油，冰火交融，搭配招牌香濃熱奶茶，人間美味！",
+            transport: { type: "步行", color: "bg-yamabuki" },
+            isMust: true
+          },
+          {
+            time: "10:30 - 12:30",
+            title: "旺角油麻地特色選品、珍妮曲奇小熊餅乾採買",
+            desc: "採買四味奶油曲奇、上環檸檬王甘草檸檬、大排檔奶茶沖泡包，為親朋好友打包最道地的香港風味。",
+            transport: { type: "步行", color: "bg-yamabuki" },
+            isMust: false
+          },
+          {
+            time: "12:30 - 13:30",
+            title: "飯店辦理退房 ＆ 前往市區預辦登機",
+            desc: "回帝京酒店領取行李，前往九龍站利用「市區預辦登機」提早托運行李並領取登機證，兩手空空輕鬆玩！",
+            transport: { type: "計程車 / 港鐵", color: "bg-mizu" },
+            isMust: false
+          },
+          {
+            time: "14:00 - 16:30",
+            title: "西九文化區 M+ / 香港故宮草坪漫步",
+            desc: "在維港最新的文化地標西九藝術公園吹海風、坐在面海草坪上喝咖啡，欣賞壯觀天際線，留下最後的夏日寫真拍立得。",
+            transport: { type: "步行 / 綠色小巴", color: "bg-wakatake" },
+            isMust: false
+          },
+          {
+            time: "17:00 - 19:30",
+            title: "搭乘機場快綫前往香港機場 T1 免稅店巡禮",
+            desc: "抵達機場，悠閒逛免稅精品、迪士尼機場專賣店最後補貨、在機場翠華或翡翠拉麵小籠包享用出境前晚餐。",
+            transport: { type: "機場快綫", color: "bg-mizu" },
+            isMust: false
+          },
+          {
+            time: "20:30 - 22:20",
+            title: "搭乘國泰航空 CX408 平安飛抵桃園機場",
+            desc: "登上 A350 客機，伴隨機上香港電影與夜色降落桃園 T1，結束滿載 4 天 3 夜回憶的香港盛夏漫遊！",
+            transport: { type: "飛機", color: "bg-coral" },
+            isMust: true
+          }
+        ]
+      }
+    };
+
+    const CHECKLIST_DATA = [
+      { id: "c1", category: "docs", label: "中華民國護照（效期 6 個月以上）" },
+      { id: "c2", category: "docs", label: "台灣居民預辦入境登記（香港電子簽證）列印本" },
+      { id: "c3", category: "docs", label: "國泰航空電子機票 & 護照影本備份" },
+      { id: "c4", category: "docs", label: "香港迪士尼樂園門票 QR Code & 預約入園確認" },
+      { id: "c5", category: "luggage", label: "英規三腳方型轉接頭 (Type G) & 行動電源" },
+      { id: "c6", category: "luggage", label: "晴雨兩用摺疊傘 (夏日午後易有驟雨)" },
+      { id: "c7", category: "luggage", label: "薄外套 / 冷氣房防風罩衫 (香港室內冷氣很強)" },
+      { id: "c8", category: "luggage", label: "好走的運動鞋 (每日步數約 18,000 步)" },
+      { id: "c9", category: "apps", label: "iPhone 八達通卡儲值 (加入 Apple Wallet)" },
+      { id: "c10", category: "apps", label: "中港澳 eSIM / 漫遊上網開通" },
+      { id: "c11", category: "apps", label: "香港迪士尼官方 App (下載並綁定門票)" },
+      { id: "c12", category: "apps", label: "港鐵 MTR Mobile & Google Maps 離線地圖" },
+    ];
+
+    function renderItinerary(day) {
+      const container = document.getElementById('timeline-container');
+      const data = ITINERARY_DATA[day];
+      
+      for (let i = 1; i <= 4; i++) {
+        const tab = document.getElementById(`btn-day-${i}`);
+        if (i === day) {
+          tab.className = "day-tab border-ink rounded-2xl p-3 text-left transition-all shadow-hard bg-yamabuki translate-y-[-2px]";
+        } else {
+          tab.className = "day-tab border-ink rounded-2xl p-3 text-left transition-all shadow-hard bg-white hover:bg-yamabuki/20";
+        }
+      }
+
+      let html = `
+        <div class="pop-in space-y-6">
+          <div class="border-b-[2px] border-sumi pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <span class="px-3 py-1 rounded-full bg-coral/30 border-ink-sm text-xs font-black inline-block mb-1">
+                ${data.badge}
+              </span>
+              <h3 class="text-xl sm:text-2xl font-black">${data.title}</h3>
+              <p class="text-xs sm:text-sm text-sumi/80 font-medium mt-1 leading-relaxed">${data.summary}</p>
+            </div>
+          </div>
+
+          <div class="relative pl-6 sm:pl-8 space-y-7 before:content-[''] before:absolute before:left-[11px] sm:before:left-[15px] before:top-2 before:bottom-2 before:w-[3px] before:bg-sumi">
+      `;
+
+      data.events.forEach(item => {
+        html += `
+          <div class="relative group">
+            <div class="absolute -left-[30px] sm:-left-[35px] top-1.5 w-5 h-5 rounded-full bg-white border-ink flex items-center justify-center group-hover:scale-125 transition-transform">
+              <div class="w-2 h-2 rounded-full ${item.isMust ? 'bg-coral' : 'bg-sumi'}"></div>
+            </div>
+
+            <div class="bg-washi border-ink-sm rounded-2xl p-4 sm:p-5 shadow-hard-sm hover:-translate-y-0.5 transition-all">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-white border-ink-sm flex items-center gap-1">
+                  🕒 ${item.time}
+                </span>
+
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-md border-ink-sm ${item.transport.color}">
+                    ${item.transport.type}
+                  </span>
+                  ${item.isMust ? `
+                    <span class="stamp-must bg-coral text-white text-[10px] px-2 py-0.5 border-ink-sm shadow-hard-pressed">
+                      ★ 必去行程
+                    </span>
+                  ` : ''}
+                </div>
+              </div>
+
+              <h4 class="text-base sm:text-lg font-black text-sumi mb-1">
+                ${item.title}
+              </h4>
+
+              <p class="text-xs sm:text-sm text-sumi/80 font-medium leading-relaxed">
+                ${item.desc}
+              </p>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div></div>`;
+      container.innerHTML = html;
+    }
+
+    function switchDay(day) {
+      renderItinerary(day);
+    }
+
+    function updateCountdown() {
+      const targetTime = new Date("2026-07-25T10:50:00+08:00").getTime();
+      const now = new Date().getTime();
+      const diff = targetTime - now;
+
+      if (diff <= 0) {
+        document.getElementById('countdown-status').innerText = "✨ 旅程圓滿完成！美好回憶永久收藏 🇭🇰";
+        document.getElementById('cd-days').innerText = "00";
+        document.getElementById('cd-hours').innerText = "00";
+        document.getElementById('cd-mins').innerText = "00";
+        document.getElementById('cd-secs').innerText = "00";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById('cd-days').innerText = String(days).padStart(2, '0');
+      document.getElementById('cd-hours').innerText = String(hours).padStart(2, '0');
+      document.getElementById('cd-mins').innerText = String(minutes).padStart(2, '0');
+      document.getElementById('cd-secs').innerText = String(seconds).padStart(2, '0');
+    }
+
+    const CHECKLIST_STORAGE_KEY = "hk_trip_checklist_2026";
+
+    function loadChecklistState() {
+      try {
+        const stored = localStorage.getItem(CHECKLIST_STORAGE_KEY);
+        return stored ? JSON.parse(stored) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveChecklistState(state) {
+      try {
+        localStorage.setItem(CHECKLIST_STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    function toggleCheck(id) {
+      const state = loadChecklistState();
+      state[id] = !state[id];
+      saveChecklistState(state);
+      renderChecklist();
+    }
+
+    function resetChecklist() {
+      localStorage.removeItem(CHECKLIST_STORAGE_KEY);
+      renderChecklist();
+    }
+
+    function renderChecklist() {
+      const state = loadChecklistState();
+      const groups = {
+        docs: document.getElementById('group-docs'),
+        luggage: document.getElementById('group-luggage'),
+        apps: document.getElementById('group-apps')
+      };
+
+      groups.docs.innerHTML = '';
+      groups.luggage.innerHTML = '';
+      groups.apps.innerHTML = '';
+
+      let checkedCount = 0;
+
+      CHECKLIST_DATA.forEach(item => {
+        const isChecked = !!state[item.id];
+        if (isChecked) checkedCount++;
+
+        const labelEl = document.createElement('label');
+        labelEl.className = `flex items-start gap-2.5 p-2 rounded-xl border-ink-sm cursor-pointer transition-all ${isChecked ? 'bg-wakatake/20 line-through text-sumi/50' : 'bg-washi hover:bg-yamabuki/20'}`;
+        
+        labelEl.innerHTML = `
+          <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCheck('${item.id}')" 
+                 class="mt-0.5 rounded text-coral focus:ring-0 border-sumi w-4 h-4 cursor-pointer accent-sumi">
+          <span class="text-xs sm:text-sm select-none leading-snug">${item.label}</span>
+        `;
+
+        groups[item.category].appendChild(labelEl);
+      });
+
+      const total = CHECKLIST_DATA.length;
+      const percent = Math.round((checkedCount / total) * 100);
+
+      document.getElementById('progress-count').innerText = `${checkedCount} / ${total} 項完成`;
+      document.getElementById('progress-percent').innerText = `${percent}%`;
+      document.getElementById('progress-bar-fill').style.width = `${percent}%`;
+
+      if (checkedCount === total) {
+        document.getElementById('progress-text').innerText = "太棒了！所有準備工作全數就緒！🎉";
+      } else if (checkedCount > 0) {
+        document.getElementById('progress-text').innerText = "行前準備中，加把勁！";
+      } else {
+        document.getElementById('progress-text').innerText = "尚未開始勾選，開始打點行李吧！";
+      }
+    }
+
+    // --- INITIALIZATION ---
+    window.onload = function () {
+      renderTripsGrid();
+      renderItinerary(1);
+      renderChecklist();
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    };
+  </script>
+</body>
+</html>
