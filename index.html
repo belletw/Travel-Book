@@ -35,10 +35,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       background-color: var(--bg-washi);
       color: var(--ink-gray);
@@ -74,7 +70,6 @@
       cursor: pointer;
       text-decoration: none;
       color: var(--ink-gray);
-      flex-shrink: 0;
     }
 
     .brand-icon {
@@ -297,7 +292,7 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 18px;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
 
     @media (min-width: 600px) {
@@ -315,3 +310,1154 @@
       display: flex;
       flex-direction: column;
       transition: transform 0.2s ease;
+    }
+
+    .trip-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .trip-cover {
+      height: 135px;
+      border-bottom: var(--border-thick);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .trip-status-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      border: 2.5px solid var(--ink-gray);
+      background-color: var(--card-white);
+      font-size: 0.75rem;
+      font-weight: 900;
+      box-shadow: var(--shadow-hard-sm);
+    }
+
+    .trip-days-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      border: 2.5px solid var(--ink-gray);
+      background-color: var(--yamabuki-yellow);
+      font-size: 0.75rem;
+      font-weight: 900;
+      box-shadow: var(--shadow-hard-sm);
+    }
+
+    .trip-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .trip-date {
+      font-size: 0.8rem;
+      font-weight: 700;
+      opacity: 0.8;
+      margin-bottom: 4px;
+    }
+
+    /* 新增：行程倒數或回憶狀態欄位 */
+    .trip-countdown-field {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 10px;
+      border: 2px solid var(--ink-gray);
+      font-size: 0.82rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow-hard-sm);
+      align-self: flex-start;
+    }
+
+    .trip-countdown-field.upcoming {
+      background-color: var(--yamabuki-yellow);
+    }
+
+    .trip-countdown-field.ongoing {
+      background-color: var(--coral-pink);
+    }
+
+    .trip-countdown-field.completed {
+      background-color: var(--muted-beige);
+    }
+
+    .trip-title {
+      font-size: 1.2rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .trip-summary {
+      font-size: 0.88rem;
+      margin-bottom: 12px;
+      flex: 1;
+    }
+
+    .trip-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .tag-chip {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: var(--radius-pill);
+      border: 2px solid var(--ink-gray);
+      background-color: var(--bg-washi);
+    }
+
+    .trip-footer {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .trip-footer .btn-pill {
+      flex: 1;
+      justify-content: center;
+      font-size: 0.83rem;
+      padding: 8px 10px;
+    }
+
+    /* 單一行程內頁 (香港完整頁) */
+    .view-section {
+      display: none;
+    }
+    .view-section.active {
+      display: block;
+      animation: popIn 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: translateY(10px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* 倒數計時器 */
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      max-width: 400px;
+      margin: 14px auto 0;
+    }
+
+    .cd-box {
+      background-color: var(--yamabuki-yellow);
+      border: var(--border-thick);
+      border-radius: var(--radius-md);
+      padding: 8px 4px;
+      box-shadow: var(--shadow-hard-sm);
+    }
+
+    .cd-num {
+      font-size: 1.35rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .cd-unit {
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    /* 航班與通用資訊卡 */
+    .info-card {
+      background-color: var(--card-white);
+      border: var(--border-thick);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-hard);
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .flight-item {
+      background-color: var(--bg-washi);
+      border: 2.5px solid var(--ink-gray);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-top: 12px;
+    }
+
+    .flight-route {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    .flight-time {
+      font-size: 1.3rem;
+      font-weight: 900;
+    }
+
+    .flight-station {
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .flight-Tip {
+      font-size: 0.82rem;
+      background-color: var(--yamabuki-yellow);
+      border: 2px solid var(--ink-gray);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-weight: 700;
+    }
+
+    /* 日期切換按鈕與時間軸 */
+    .day-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .day-tab {
+      background-color: var(--card-white);
+      border: var(--border-thick);
+      border-radius: var(--radius-md);
+      padding: 10px 4px;
+      text-align: center;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: var(--shadow-hard-sm);
+      transition: transform 0.15s ease;
+    }
+
+    .day-tab.active {
+      background-color: var(--coral-pink);
+      transform: translateY(-2px);
+    }
+
+    .day-tab-title {
+      font-size: 0.95rem;
+      font-weight: 900;
+    }
+
+    .day-tab-date {
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 22px;
+      border-left: 3px dashed var(--ink-gray);
+      margin-left: 10px;
+    }
+
+    .tl-item {
+      position: relative;
+      background-color: var(--bg-washi);
+      border: 2.5px solid var(--ink-gray);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-hard-sm);
+    }
+
+    .tl-dot {
+      position: absolute;
+      left: -32px;
+      top: 16px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: var(--yamabuki-yellow);
+      border: 3px solid var(--ink-gray);
+    }
+
+    .tl-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .tl-time {
+      font-size: 0.82rem;
+      font-weight: 900;
+      background-color: var(--card-white);
+      border: 2px solid var(--ink-gray);
+      border-radius: 8px;
+      padding: 1px 8px;
+    }
+
+    .tl-transport {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: var(--radius-pill);
+      border: 2px solid var(--ink-gray);
+    }
+
+    .tl-must {
+      font-size: 0.75rem;
+      font-weight: 900;
+      background-color: var(--coral-pink);
+      border: 2px solid var(--ink-gray);
+      border-radius: var(--radius-pill);
+      padding: 1px 8px;
+    }
+
+    .tl-title {
+      font-size: 1.02rem;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .tl-desc {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    /* 待辦清單 */
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 2.5px solid var(--ink-gray);
+      border-radius: 12px;
+      background-color: var(--bg-washi);
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .check-item.done {
+      background-color: var(--wakatake-green);
+      text-decoration: line-through;
+      opacity: 0.85;
+    }
+
+    .check-box {
+      width: 22px;
+      height: 22px;
+      border: 2.5px solid var(--ink-gray);
+      border-radius: 6px;
+      background-color: var(--card-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* 彈跳視窗 Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(62, 58, 57, 0.55);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background-color: var(--bg-washi);
+      border: var(--border-thick);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-hard);
+      width: 100%;
+      max-width: 460px;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 2.5px solid var(--ink-gray);
+      border-radius: 12px;
+      background-color: var(--card-white);
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--ink-gray);
+    }
+
+    /* 微動畫與無障礙設定 */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @keyframes boatRock {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
+    }
+
+    .anim-float { animation: floatSlow 3.6s ease-in-out infinite; }
+    .anim-rock { animation: boatRock 3s ease-in-out infinite; transform-origin: center bottom; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px 16px;
+      border-top: var(--border-thick);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頂端固定選單 -->
+  <header class="navbar">
+    <a class="brand" onclick="switchView('portal')">
+      <div class="brand-icon">🌍</div>
+      <div class="brand-text-wrap">
+        <!-- 修改一：1. 世界漫遊 & 2. All Trips Portal -->
+        <span class="brand-title">世界漫遊</span>
+        <span class="brand-subtitle">All Trips Portal</span>
+      </div>
+    </a>
+
+    <!-- 總覽首頁的導覽按鈕 -->
+    <div class="nav-actions" id="nav-portal">
+      <button class="btn-pill btn-yellow" onclick="openAddModal()">＋ 新增行程</button>
+    </div>
+
+    <!-- 單一行程內頁的導覽按鈕 -->
+    <div class="nav-actions" id="nav-detail" style="display: none;">
+      <button class="btn-pill btn-yellow" onclick="switchView('portal')">← 返回總覽</button>
+      <a class="btn-pill" href="#sec-flights">✈️ 航班</a>
+      <a class="btn-pill" href="#sec-days">🗓️ 每日</a>
+      <a class="btn-pill" href="#sec-todo">☑️ 待辦</a>
+      <a class="btn-pill" href="#sec-hotel">🏨 住宿</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- ==================== 視圖 1：最外層「世界漫遊」總覽首頁 ==================== -->
+    <section id="view-portal" class="view-section active">
+      <div class="hero-card">
+        <!-- 修改二：1. 拿掉「隨時」兩字 -->
+        <span class="hero-badge">旅行手帖總覽 • 串聯Notion筆記</span>
+        <!-- 修改二：2. 新大標（不提手繪繪本，溫暖呼應頁尾） -->
+        <h1 class="hero-title">把每一趟旅行，收藏進閃閃發光的記憶裡！</h1>
+        <!-- 修改二：3. 專屬繪本卡片 -> 專屬旅遊卡片 -->
+        <p class="hero-desc">
+          這裡是所有旅遊計畫與回憶的秘密基地。每次在 Notion 規劃好新的行程，只要點選「＋新增行程」，就能自動產生專屬旅遊卡片！
+        </p>
+
+        <!-- 首頁插圖 SVG -->
+        <div class="hero-svg-wrap">
+          <svg viewBox="0 0 460 150" width="100%" height="auto" role="img" aria-label="世界漫遊主題插圖">
+            <!-- 背景雲朵與太陽 -->
+            <circle cx="65" cy="40" r="20" fill="#F6D27A" stroke="#3E3A39" stroke-width="3" class="anim-float"/>
+            <g class="anim-float" style="animation-delay: 0.6s;">
+              <path d="M120 45 H170 A12 12 0 0 0 170 22 A16 16 0 0 0 140 16 A13 13 0 0 0 120 45 Z" fill="#FFFFFF" stroke="#3E3A39" stroke-width="3"/>
+            </g>
+            <!-- 地面線 -->
+            <line x1="15" y1="132" x2="445" y2="132" stroke="#3E3A39" stroke-width="3" stroke-linecap="round"/>
+            <!-- 左側：神社鳥居 -->
+            <g transform="translate(38, 62)">
+              <rect x="8" y="20" width="8" height="50" fill="#F2A497" stroke="#3E3A39" stroke-width="3"/>
+              <rect x="44" y="20" width="8" height="50" fill="#F2A497" stroke="#3E3A39" stroke-width="3"/>
+              <path d="M0 14 Q30 6 60 14 L56 22 H4 Z" fill="#F2A497" stroke="#3E3A39" stroke-width="3"/>
+              <rect x="6" y="30" width="48" height="7" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/>
+            </g>
+            <!-- 中間：復古旅行箱與地球儀 -->
+            <g transform="translate(165, 52)">
+              <rect x="32" y="0" width="36" height="14" rx="5" fill="#A8D3E6" stroke="#3E3A39" stroke-width="3"/>
+              <rect x="10" y="12" width="80" height="68" rx="12" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/>
+              <line x1="28" y1="12" x2="28" y2="80" stroke="#3E3A39" stroke-width="3"/>
+              <line x1="72" y1="12" x2="72" y2="80" stroke="#3E3A39" stroke-width="3"/>
+              <!-- 行李箱貼紙 -->
+              <circle cx="50" cy="40" r="11" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+              <rect x="40" y="56" width="24" height="12" rx="3" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+            </g>
+            <!-- 右側：城堡與熱帶椰子樹 -->
+            <g transform="translate(300, 48)">
+              <rect x="10" y="36" width="52" height="48" fill="#A8D3E6" stroke="#3E3A39" stroke-width="3"/>
+              <polygon points="6,36 36,6 66,36" fill="#F2A497" stroke="#3E3A39" stroke-width="3"/>
+              <rect x="28" y="56" width="16" height="28" rx="8" fill="#FFFCF6" stroke="#3E3A39" stroke-width="3"/>
+              <circle cx="95" cy="52" r="18" fill="#B9DAA5" stroke="#3E3A39" stroke-width="3"/>
+              <rect x="91" y="66" width="8" height="18" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/>
+            </g>
+            <!-- 天空小飛機 -->
+            <g class="anim-float" transform="translate(275, 16)">
+              <path d="M0 16 L36 6 L28 24 L16 20 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="stats-bar">
+          <div class="stat-box" style="background-color: var(--yamabuki-yellow);">
+            <div class="stat-num" id="stat-total">3</div>
+            <div class="stat-label">總收藏旅程</div>
+          </div>
+          <div class="stat-box" style="background-color: var(--mizu-blue);">
+            <div class="stat-num" id="stat-upcoming">1</div>
+            <div class="stat-label">即將出發</div>
+          </div>
+          <div class="stat-box" style="background-color: var(--wakatake-green);">
+            <div class="stat-num" id="stat-completed">2</div>
+            <div class="stat-label">美好回憶錄</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 修改三：1. 我的旅程繪本書架 -> 我的旅程 -->
+      <div class="section-header">
+        <h2 class="section-title">🎒 我的旅程</h2>
+        <button class="btn-pill btn-coral" onclick="openAddModal()">＋ 新增 Notion 行程</button>
+      </div>
+
+      <div class="filter-row">
+        <input type="text" id="search-input" class="search-input" placeholder="🔍 搜尋目的地、標籤或關鍵字..." oninput="renderTripCards()" />
+        <button class="filter-btn active" onclick="setFilter('all', this)">全部旅程</button>
+        <button class="filter-btn" onclick="setFilter('upcoming', this)">即將出發</button>
+        <button class="filter-btn" onclick="setFilter('completed', this)">美好回憶</button>
+      </div>
+
+      <!-- 行程卡片容器 -->
+      <div class="trip-grid" id="trip-grid"></div>
+    </section>
+
+    <!-- ==================== 視圖 2：2026 香港夏日漫遊 完整內頁 ==================== -->
+    <section id="view-hk-detail" class="view-section">
+      <div class="hero-card">
+        <span class="hero-badge" style="background-color: var(--mizu-blue);">2026.07.25 - 07.28 • 4天3夜</span>
+        <h1 class="hero-title">🇭🇰 2026 香港夏日漫遊</h1>
+        <p class="hero-desc">香港迪士尼奇妙夢想城堡、維多利亞港天星小輪、中環復古叮叮車與道地冰室美食之旅！</p>
+
+        <!-- 香港特色手繪 SVG 插圖 -->
+        <div class="hero-svg-wrap">
+          <svg viewBox="0 0 460 155" width="100%" height="auto" role="img" aria-label="香港迪士尼與維港天星小輪插圖">
+            <!-- 太陽與雲朵 -->
+            <circle cx="55" cy="36" r="18" fill="#F6D27A" stroke="#3E3A39" stroke-width="3" class="anim-float"/>
+            <path d="M330 42 H385 A11 11 0 0 0 385 20 A15 15 0 0 0 355 15 A12 12 0 0 0 330 42 Z" fill="#FFFFFF" stroke="#3E3A39" stroke-width="3" class="anim-float"/>
+
+            <!-- 迪士尼城堡剪影 -->
+            <g transform="translate(45, 42)">
+              <rect x="18" y="38" width="54" height="45" fill="#F2A497" stroke="#3E3A39" stroke-width="3"/>
+              <polygon points="14,38 45,8 76,38" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/>
+              <rect x="36" y="55" width="18" height="28" rx="9" fill="#FFFCF6" stroke="#3E3A39" stroke-width="3"/>
+              <line x1="45" y1="8" x2="45" y2="-4" stroke="#3E3A39" stroke-width="3"/>
+              <polygon points="45,-4 60,2 45,6" fill="#A8D3E6" stroke="#3E3A39" stroke-width="2.5"/>
+            </g>
+
+            <!-- 雙層叮叮車 -->
+            <g transform="translate(155, 48)">
+              <rect x="0" y="12" width="58" height="65" rx="8" fill="#B9DAA5" stroke="#3E3A39" stroke-width="3"/>
+              <line x1="0" y1="44" x2="58" y2="44" stroke="#3E3A39" stroke-width="3"/>
+              <rect x="8" y="20" width="18" height="16" rx="3" fill="#FFFCF6" stroke="#3E3A39" stroke-width="2.5"/>
+              <rect x="32" y="20" width="18" height="16" rx="3" fill="#FFFCF6" stroke="#3E3A39" stroke-width="2.5"/>
+              <circle cx="16" cy="79" r="6" fill="#3E3A39"/>
+              <circle cx="42" cy="79" r="6" fill="#3E3A39"/>
+            </g>
+
+            <!-- 天星小輪 -->
+            <g class="anim-rock" transform="translate(265, 62)">
+              <path d="M10 42 L115 42 L102 64 L23 64 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="3"/>
+              <rect x="26" y="20" width="72" height="22" rx="5" fill="#FFFFFF" stroke="#3E3A39" stroke-width="3"/>
+              <rect x="54" y="6" width="14" height="14" fill="#F6D27A" stroke="#3E3A39" stroke-width="3"/>
+            </g>
+
+            <!-- 維多利亞港海浪 -->
+            <path d="M15 128 Q45 118 75 128 T135 128 T195 128 T255 128 T315 128 T375 128 T445 128" fill="none" stroke="#3E3A39" stroke-width="3.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div id="hk-countdown-label" style="font-size: 0.85rem; font-weight: 900; margin-bottom: 4px;">⏳ 距離香港啟程倒數 / 回憶時光</div>
+        <div class="countdown-grid">
+          <div class="cd-box"><div class="cd-num" id="cd-d">0</div><div class="cd-unit">天</div></div>
+          <div class="cd-box" style="background-color: var(--coral-pink);"><div class="cd-num" id="cd-h">0</div><div class="cd-unit">時</div></div>
+          <div class="cd-box" style="background-color: var(--mizu-blue);"><div class="cd-num" id="cd-m">0</div><div class="cd-unit">分</div></div>
+          <div class="cd-box" style="background-color: var(--wakatake-green);"><div class="cd-num" id="cd-s">0</div><div class="cd-unit">秒</div></div>
+        </div>
+
+        <div style="margin-top: 14px;">
+          <a href="https://app.notion.com/p/2026-07-25-07-28-00b473536f01820690e181684111bce9?source=copy_link" target="_blank" rel="noopener" class="btn-pill btn-yellow">
+            📒 打開原始 Notion 筆記
+          </a>
+        </div>
+      </div>
+
+      <!-- 航班資訊卡片 -->
+      <div class="info-card" id="sec-flights">
+        <h2 class="section-title">✈️ 航班資訊</h2>
+        <div class="flight-item">
+          <div style="display:flex; justify-content:space-between; font-weight:900; font-size:0.9rem;">
+            <span>去程 • 2026/07/25 (六)</span>
+            <span style="background:var(--wakatake-green); padding:1px 10px; border:2px solid var(--ink-gray); border-radius:99px;">國泰航空 CX489</span>
+          </div>
+          <div class="flight-route">
+            <div>
+              <div class="flight-time">10:50</div>
+              <div class="flight-station">TPE 桃園 T1</div>
+            </div>
+            <div style="font-weight:900;">── ✈️ 1h55m ──▶</div>
+            <div>
+              <div class="flight-time">12:45</div>
+              <div class="flight-station">HKG 香港 T1</div>
+            </div>
+          </div>
+          <div class="flight-Tip">💡 機型 B777-300ER：起飛前 48 小時開放網路選位，選右側靠窗或機艙前段走道下機更快！</div>
+        </div>
+
+        <div class="flight-item">
+          <div style="display:flex; justify-content:space-between; font-weight:900; font-size:0.9rem;">
+            <span>回程 • 2026/07/28 (二)</span>
+            <span style="background:var(--mizu-blue); padding:1px 10px; border:2px solid var(--ink-gray); border-radius:99px;">國泰航空 晚班機</span>
+          </div>
+          <div class="flight-route">
+            <div>
+              <div class="flight-time">19:50</div>
+              <div class="flight-station">HKG 香港 T1</div>
+            </div>
+            <div style="font-weight:900;">── ✈️ 1h50m ──▶</div>
+            <div>
+              <div class="flight-time">21:40</div>
+              <div class="flight-station">TPE 桃園 T1</div>
+            </div>
+          </div>
+          <div class="flight-Tip">💡 最後一天可於九龍站或香港站預辦登機託運行李，輕鬆逛街再去機場！</div>
+        </div>
+      </div>
+
+      <!-- 每日行程時間軸 -->
+      <div class="info-card" id="sec-days">
+        <h2 class="section-title" style="margin-bottom: 12px;">🗓️ 每日行程表</h2>
+        <div class="day-tabs">
+          <button class="day-tab active" onclick="selectHkDay(1, this)">
+            <div class="day-tab-title">Day 1</div>
+            <div class="day-tab-date">07/25 (六)</div>
+          </button>
+          <button class="day-tab" onclick="selectHkDay(2, this)">
+            <div class="day-tab-title">Day 2</div>
+            <div class="day-tab-date">07/26 (日)</div>
+          </button>
+          <button class="day-tab" onclick="selectHkDay(3, this)">
+            <div class="day-tab-title">Day 3</div>
+            <div class="day-tab-date">07/27 (一)</div>
+          </button>
+          <button class="day-tab" onclick="selectHkDay(4, this)">
+            <div class="day-tab-title">Day 4</div>
+            <div class="day-tab-date">07/28 (二)</div>
+          </button>
+        </div>
+
+        <div class="timeline" id="hk-timeline-list"></div>
+      </div>
+
+      <!-- 可打勾待辦清單 -->
+      <div class="info-card" id="sec-todo">
+        <div class="section-header">
+          <h2 class="section-title">☑️ 行前準備與必買清單</h2>
+          <span id="todo-progress" style="font-size:0.85rem; font-weight:900; background:var(--yamabuki-yellow); padding:3px 12px; border:2px solid var(--ink-gray); border-radius:99px;">0 / 6</span>
+        </div>
+        <div id="todo-container"></div>
+      </div>
+
+      <!-- 住宿資訊 -->
+      <div class="info-card" id="sec-hotel">
+        <h2 class="section-title" style="margin-bottom: 10px;">🏨 住宿資訊</h2>
+        <div style="background:var(--bg-washi); border:2.5px solid var(--ink-gray); border-radius:16px; padding:14px;">
+          <div style="font-size:1.1rem; font-weight:900; margin-bottom:4px;">旺角東 / 九龍站周邊精選酒店</div>
+          <div style="font-size:0.86rem; margin-bottom:10px;">📍 交通便利，鄰近東鐵綫旺角東站與大型商場 MOKO 新世紀廣場，前往欣澳轉乘迪士尼綫約 35-40 分鐘。</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span class="tag-chip" style="background:var(--yamabuki-yellow);">🕒 入住 15:00 後</span>
+            <span class="tag-chip" style="background:var(--mizu-blue);">🕚 退房 11:00 前</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=旺角東站" target="_blank" rel="noopener" class="tag-chip" style="background:var(--coral-pink); text-decoration:none; color:var(--ink-gray);">🗺️ 開啟 Google 地圖</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 新增 Notion 行程 Modal -->
+  <div class="modal-backdrop" id="add-modal">
+    <div class="modal-card">
+      <h3 style="font-size:1.25rem; font-weight:900; margin-bottom:12px;">✨ 新增 Notion 旅遊卡片</h3>
+      <form onsubmit="handleAddTrip(event)">
+        <div class="form-group">
+          <label class="form-label">旅程名稱</label>
+          <input type="text" id="f-title" class="form-input" placeholder="例如：2026 東京冬日銀杏漫步" required />
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label class="form-label">出發日期</label>
+            <input type="date" id="f-start" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">回程日期</label>
+            <input type="date" id="f-end" class="form-input" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">行程簡要說明（僅需填寫行程亮點，不需填寫航班）</label>
+          <textarea id="f-summary" class="form-textarea" rows="2" placeholder="例如：走訪淺草寺、晴空塔夜景、鎌倉江之電一日遊與甜點巡禮。" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notion 行程連結</label>
+          <input type="url" id="f-notion" class="form-input" placeholder="https://www.notion.so/..." required />
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label class="form-label">卡片代表色</label>
+            <select id="f-color" class="form-select">
+              <option value="#F2A497">珊瑚粉</option>
+              <option value="#F6D27A">山吹黃</option>
+              <option value="#A8D3E6">水色藍</option>
+              <option value="#B9DAA5">若竹綠</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">主題插圖</label>
+            <select id="f-theme" class="form-select">
+              <option value="harbor">維港小輪與城堡</option>
+              <option value="train">海濱列車與海鷗</option>
+              <option value="shrine">日本神社與紅梅</option>
+              <option value="island">陽光海島與椰樹</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">特色標籤（用逗號分隔）</label>
+          <input type="text" id="f-tags" class="form-input" placeholder="例如：美食巡禮, 看海放空, 樂園打卡" />
+        </div>
+        <div style="display:flex; gap:10px; margin-top:16px;">
+          <button type="button" class="btn-pill" style="flex:1; justify-content:center;" onclick="closeAddModal()">取消</button>
+          <button type="submit" class="btn-pill btn-coral" style="flex:1; justify-content:center;">儲存旅遊卡片</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 修改四：頁尾文字更新 -->
+  <footer>
+    <div>世界漫遊 • 收藏每一段閃閃發光的旅途</div>
+    <div style="font-size: 0.76rem; opacity: 0.8; margin-top: 4px;">支援 Notion 行程快速擴充與離線記憶</div>
+  </footer>
+
+  <script>
+    // 預設行程清單（已移除所有航班班次文字，純粹呈現行程精華）
+    const defaultTrips = [
+      {
+        id: 'hk-2026',
+        title: '🇭🇰 2026 香港夏日漫遊',
+        startDate: '2026-07-25',
+        endDate: '2026-07-28',
+        daysText: '4天3夜',
+        color: '#A8D3E6',
+        theme: 'harbor',
+        // 修改三：3. 香港行程簡要說明不提航班班次，只寫行程亮點
+        summary: '暢玩香港迪士尼樂園與魔雪奇緣世界、欣賞夜間城堡煙火秀，搭乘復古叮叮車與天星小輪漫遊維多利亞港，品嚐道地茶餐廳與冰室蛋撻。',
+        tags: ['迪士尼樂園', '維港夜景', '港式冰室'],
+        notionUrl: 'https://app.notion.com/p/2026-07-25-07-28-00b473536f01820690e181684111bce9?source=copy_link',
+        hasInternalPage: true
+      },
+      {
+        id: 'busan-2026',
+        title: '🇰🇷 2026 釜山秋日海風之旅',
+        startDate: '2026-10-30',
+        endDate: '2026-11-02',
+        daysText: '4天3夜',
+        color: '#F6D27A',
+        theme: 'train',
+        summary: '搭乘海雲台藍線公園天空膠囊列車、漫步白淺灘文化村海景咖啡廳、甘川洞積木小鎮拍照，夜晚欣賞廣安里無人機燈光秀。',
+        tags: ['膠囊列車', '海景咖啡', '廣安里大橋'],
+        notionUrl: 'https://www.notion.so/',
+        hasInternalPage: false
+      },
+      {
+        id: 'fukuoka-2026',
+        title: '🇯🇵 2026 福岡太宰府初春旅',
+        startDate: '2026-01-16',
+        endDate: '2026-01-20',
+        daysText: '5天4夜',
+        color: '#F2A497',
+        theme: 'shrine',
+        summary: '入住太宰府古民家旅館，清早參拜天滿宮賞初春紅梅、品嚐現烤梅枝餅，走訪博多運河城、天神地下街與暖胃牛腸鍋。',
+        tags: ['太宰府天滿宮', '古民家住宿', '博多美食'],
+        notionUrl: 'https://www.notion.so/',
+        hasInternalPage: false
+      }
+    ];
+
+    let currentFilter = 'all';
+    let trips = [];
+
+    function loadTrips() {
+      const saved = localStorage.getItem('world_roam_trips_v2');
+      if (saved) {
+        try {
+          trips = JSON.parse(saved);
+        } catch (e) {
+          trips = [...defaultTrips];
+        }
+      } else {
+        trips = [...defaultTrips];
+      }
+    }
+
+    function saveTrips() {
+      localStorage.setItem('world_roam_trips_v2', JSON.stringify(trips));
+    }
+
+    // 計算今天與行程出發/結束日的差距（回傳狀態與顯示文字）
+    function getTripTimingInfo(startStr, endStr) {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const [sy, sm, sd] = startStr.split('-').map(Number);
+      const [ey, em, ed] = endStr.split('-').map(Number);
+      const startDate = new Date(sy, sm - 1, sd);
+      const endDate = new Date(ey, em - 1, ed);
+
+      const diffStartDays = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+      const diffEndDays = Math.floor((today - endDate) / (1000 * 60 * 60 * 24));
+
+      if (diffStartDays > 0) {
+        return {
+          status: 'upcoming',
+          badgeText: '🌟 即將出發',
+          fieldClass: 'upcoming',
+          fieldText: `⏳ 還有 ${diffStartDays} 天出發`
+        };
+      } else if (today <= endDate) {
+        return {
+          status: 'upcoming',
+          badgeText: '✈️ 旅途中',
+          fieldClass: 'ongoing',
+          fieldText: '🎒 旅程愉快進行中！'
+        };
+      } else {
+        return {
+          status: 'completed',
+          badgeText: '📮 美好回憶',
+          fieldClass: 'completed',
+          fieldText: `✨ 美好回憶已珍藏 • 距離旅程 ${diffEndDays} 天`
+        };
+      }
+    }
+
+    // 繪製卡片封面 SVG
+    function getCoverSvg(theme) {
+      if (theme === 'harbor') {
+        return `<svg viewBox="0 0 240 90" width="100%" height="100%">
+          <circle cx="38" cy="24" r="12" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+          <polygon points="65,68 85,22 105,68" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+          <rect x="73" y="46" width="24" height="22" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2.5"/>
+          <path d="M130 56 L195 56 L185 72 L140 72 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+          <rect x="145" y="40" width="40" height="16" rx="3" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2.5"/>
+          <path d="M15 74 Q60 66 105 74 T195 74 L225 74" fill="none" stroke="#3E3A39" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>`;
+      }
+      if (theme === 'train') {
+        return `<svg viewBox="0 0 240 90" width="100%" height="100%">
+          <line x1="20" y1="68" x2="220" y2="68" stroke="#3E3A39" stroke-width="3"/>
+          <rect x="65" y="26" width="110" height="38" rx="12" fill="#A8D3E6" stroke="#3E3A39" stroke-width="2.5"/>
+          <rect x="80" y="34" width="32" height="18" rx="4" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2.5"/>
+          <rect x="128" y="34" width="32" height="18" rx="4" fill="#FFFFFF" stroke="#3E3A39" stroke-width="2.5"/>
+          <circle cx="92" cy="68" r="6" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+          <circle cx="148" cy="68" r="6" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+        </svg>`;
+      }
+      if (theme === 'shrine') {
+        return `<svg viewBox="0 0 240 90" width="100%" height="100%">
+          <circle cx="185" cy="28" r="14" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+          <rect x="92" y="30" width="8" height="44" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+          <rect x="140" y="30" width="8" height="44" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+          <path d="M80 22 Q120 14 160 22 L155 30 H85 Z" fill="#F2A497" stroke="#3E3A39" stroke-width="2.5"/>
+          <rect x="88" y="40" width="64" height="6" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+        </svg>`;
+      }
+      return `<svg viewBox="0 0 240 90" width="100%" height="100%">
+        <circle cx="50" cy="26" r="13" fill="#F6D27A" stroke="#3E3A39" stroke-width="2.5"/>
+        <path d="M65 72 Q120 42 175 72 Z" fill="#B9DAA5" stroke="#3E3A39" stroke-width="2.5"/>
+        <path d="M20 72 H220" stroke="#3E3A39" stroke-width="2.5"/>
+      </svg>`;
+    }
+
+    function renderTripCards() {
+      const grid = document.getElementById('trip-grid');
+      const keyword = (document.getElementById('search-input').value || '').trim().toLowerCase();
+
+      let upcomingCount = 0;
+      let completedCount = 0;
+
+      const enriched = trips.map(t => {
+        const timing = getTripTimingInfo(t.startDate, t.endDate);
+        if (timing.status === 'upcoming') upcomingCount++;
+        else completedCount++;
+        return { ...t, timing };
+      });
+
+      document.getElementById('stat-total').textContent = trips.length;
+      document.getElementById('stat-upcoming').textContent = upcomingCount;
+      document.getElementById('stat-completed').textContent = completedCount;
+
+      const filtered = enriched.filter(t => {
+        const matchStatus = currentFilter === 'all' || t.timing.status === currentFilter;
+        const textPool = `${t.title} ${t.summary} ${(t.tags || []).join(' ')}`.toLowerCase();
+        const matchKey = !keyword || textPool.includes(keyword);
+        return matchStatus && matchKey;
+      });
+
+      grid.innerHTML = filtered.map(t => `
+        <article class="trip-card">
+          <div class="trip-cover" style="background-color: ${t.color};">
+            <span class="trip-status-tag">${t.timing.badgeText}</span>
+            <span class="trip-days-badge">${t.daysText}</span>
+            ${getCoverSvg(t.theme)}
+          </div>
+          <div class="trip-body">
+            <div class="trip-date">🗓️ ${t.startDate.replace(/-/g, '.')} - ${t.endDate.slice(5).replace(/-/g, '.')}</div>
+            <!-- 修改三：2. 新增「還有XX天出發 / 已完結回憶狀態」欄位 -->
+            <div class="trip-countdown-field ${t.timing.fieldClass}">
+              ${t.timing.fieldText}
+            </div>
+            <h3 class="trip-title">${t.title}</h3>
+            <p class="trip-summary">${t.summary}</p>
+            <div class="trip-tags">
+              ${(t.tags || []).map(tag => `<span class="tag-chip">#${tag}</span>`).join('')}
+            </div>
+            <div class="trip-footer">
+              ${t.hasInternalPage ? `
+                <button class="btn-pill btn-coral" onclick="switchView('hk')">📖 開啟完整行程</button>
+              ` : ''}
+              <a href="${t.notionUrl}" target="_blank" rel="noopener" class="btn-pill btn-yellow">📒 Notion 筆記</a>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function setFilter(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTripCards();
+    }
+
+    function switchView(target) {
+      const portal = document.getElementById('view-portal');
+      const hk = document.getElementById('view-hk-detail');
+      const navPortal = document.getElementById('nav-portal');
+      const navDetail = document.getElementById('nav-detail');
+
+      if (target === 'hk') {
+        portal.classList.remove('active');
+        hk.classList.add('active');
+        navPortal.style.display = 'none';
+        navDetail.style.display = 'flex';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        hk.classList.remove('active');
+        portal.classList.add('active');
+        navDetail.style.display = 'none';
+        navPortal.style.display = 'flex';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    // 香港 4 天行程資料
+    const hkDaysData = {
+      1: [
+        { time: '10:50 - 12:45', transport: '✈️ 飛行', color: '#A8D3E6', must: false, title: '桃園機場 T1 飛往 香港國際機場 T1', desc: '抵達香港後辦理入境、領取行李並準備八達通卡。' },
+        { time: '13:30 - 15:00', transport: '🚆 機場快綫 / 港鐵', color: '#B9DAA5', must: false, title: '前往旺角東 / 九龍周邊酒店寄放行李', desc: '辦理入住手續，稍作休息整理隨身小包。' },
+        { time: '15:30 - 18:00', transport: '🚇 港鐵荃灣線', color: '#F6D27A', must: true, title: '旺角 & 尖沙咀經典街區巡禮', desc: '品嚐金華冰廳菠蘿油、逛海港城與 Bakehouse 酸種蛋撻。' },
+        { time: '19:00 - 21:00', transport: '⛴️ 天星小輪', color: '#A8D3E6', must: true, title: '維多利亞港星光大道 & 夜景漫步', desc: '吹著海風欣賞對岸中環璀璨天際線，搭乘天星小輪橫渡維港。' }
+      ],
+      2: [
+        { time: '09:00 - 10:00', transport: '🚇 東涌線轉迪士尼綫', color: '#B9DAA5', must: false, title: '搭乘夢幻米奇車廂前往香港迪士尼樂園', desc: '由欣澳站跨月台轉乘迪士尼專線，開啟奇妙一天！' },
+        { time: '10:15 - 14:30', transport: '🏰 園區漫步', color: '#F2A497', must: true, title: '魔雪奇緣世界 World of Frozen & 灰熊山谷', desc: '必玩魔雪奇幻之旅、雪嶺滑雪橇，與艾倫戴爾小鎮城堡合影。' },
+        { time: '15:00 - 18:30', transport: '🎠 園區漫步', color: '#F6D27A', must: true, title: '迷離大宅 & 奇妙夢想城堡下午茶時光', desc: '體驗迪士尼獨有迷離大宅，選購限定髮箍與達菲家族周邊。' },
+        { time: '20:30 - 21:00', transport: '🎆 城堡廣場', color: '#F2A497', must: true, title: '「迪士尼星夢光影之旅」夜間城堡煙火秀', desc: '立體光雕投影結合絢麗煙火與水舞，畫下最感動的句點。' }
+      ],
+      3: [
+        { time: '10:00 - 12:00', transport: '🚇 港鐵港島線', color: '#A8D3E6', must: true, title: '中環半山手扶梯 & 大館歷史藝術建築群', desc: '造訪蘭芳園絲襪奶茶、泰昌餅家，漫步中環文青紅磚古蹟。' },
+        { time: '13:30 - 16:30', transport: '🚋 復古叮叮車', color: '#B9DAA5', must: true, title: '搭乘雙層叮叮車漫遊上環至銅鑼灣', desc: '坐上層車頭吹風看街景，採買珍妮曲奇小熊餅乾與伴手禮。' },
+        { time: '17:30 - 20:30', transport: '🚠 山頂纜車', color: '#F6D27A', must: true, title: '太平山頂纜車 & 凌霄閣百萬夜景', desc: '俯瞰維多利亞港黃昏轉入黑夜的絕美景色。' }
+      ],
+      4: [
+        { time: '10:00 - 12:00', transport: '🚶 散步', color: '#B9DAA5', must: false, title: '道地港式早茶點心時光', desc: '悠閒享用蝦餃、燒賣、流沙包與香滑叉燒腸粉。' },
+        { time: '12:30 - 16:00', transport: '🛍️ 商場漫步', color: '#F6D27A', must: false, title: '九龍 / 旺角 MOKO 最後採買與預辦登機', desc: '把伴手禮打包託運，輕鬆喝杯手打檸檬茶。' },
+        { time: '17:00 - 19:50', transport: '🚆 機場快綫', color: '#A8D3E6', must: true, title: '香港國際機場 T1 免稅店巡禮 & 平安賦歸', desc: '逛機場迪士尼商店，搭機返回溫暖的家！' }
+      ]
+    };
+
+    function selectHkDay(dayNum, btn) {
+      document.querySelectorAll('.day-tab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      const list = document.getElementById('hk-timeline-list');
+      const items = hkDaysData[dayNum] || [];
+      list.innerHTML = items.map(item => `
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-header">
+            <span class="tl-time">${item.time}</span>
+            <span class="tl-transport" style="background-color:${item.color};">${item.transport}</span>
+            ${item.must ? `<span class="tl-must">★ 必去</span>` : ''}
+          </div>
+          <div class="tl-title">${item.title}</div>
+          <div class="tl-desc">${item.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    // 待辦清單
+    const defaultTodos = [
+      { id: 't1', text: '辦理台灣居民預辦入境登記 / 確認台胞證效期', done: true },
+      { id: 't2', text: '購買香港迪士尼樂園門票 & 預約入園', done: true },
+      { id: 't3', text: '手機綁定 Apple Pay 八達通 & 開通漫遊 eSIM', done: true },
+      { id: 't4', text: '下載香港迪士尼官方 App（查看排隊時間與煙火）', done: false },
+      { id: 't5', text: '準備英規三腳轉接頭 & 隨身行動電源', done: false },
+      { id: 't6', text: '伴手禮清單：Bakehouse 蛋撻、珍妮小熊曲奇', done: false }
+    ];
+
+    let todos = [];
+    function loadTodos() {
+      const saved = localStorage.getItem('hk_todos_v2');
+      todos = saved ? JSON.parse(saved) : [...defaultTodos];
+    }
+
+    function renderTodos() {
+      const container = document.getElementById('todo-container');
+      const doneCount = todos.filter(t => t.done).length;
+      document.getElementById('todo-progress').textContent = `${doneCount} / ${todos.length}`;
+      container.innerHTML = todos.map((t, idx) => `
+        <div class="check-item ${t.done ? 'done' : ''}" onclick="toggleTodo(${idx})">
+          <div class="check-box">${t.done ? '✓' : ''}</div>
+          <span>${t.text}</span>
+        </div>
+      `).join('');
+    }
+
+    function toggleTodo(idx) {
+      todos[idx].done = !todos[idx].done;
+      localStorage.setItem('hk_todos_v2', JSON.stringify(todos));
+      renderTodos();
+    }
+
+    // 香港內頁計時器（若未來則倒數，若已過則顯示美好回憶經過時間）
+    function updateHkClock() {
+      const target = new Date('2026-07-25T10:50:00+08:00').getTime();
+      const now = Date.now();
+      let diff = target - now;
+      const label = document.getElementById('hk-countdown-label');
+
+      if (diff < 0) {
+        diff = Math.abs(diff);
+        label.textContent = '✨ 美好回憶已珍藏 • 距離香港啟程已過';
+      } else {
+        label.textContent = '⏳ 距離香港啟程倒數';
+      }
+
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((diff / (1000 * 60)) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+
+      document.getElementById('cd-d').textContent = d;
+      document.getElementById('cd-h').textContent = h;
+      document.getElementById('cd-m').textContent = m;
+      document.getElementById('cd-s').textContent = s;
+    }
+
+    // 新增行程 Modal 邏輯
+    function openAddModal() {
+      document.getElementById('add-modal').classList.add('open');
+    }
+    function closeAddModal() {
+      document.getElementById('add-modal').classList.remove('open');
+    }
+
+    function handleAddTrip(e) {
+      e.preventDefault();
+      const title = document.getElementById('f-title').value.trim();
+      const startDate = document.getElementById('f-start').value;
+      const endDate = document.getElementById('f-end').value;
+      const summary = document.getElementById('f-summary').value.trim();
+      const notionUrl = document.getElementById('f-notion').value.trim();
+      const color = document.getElementById('f-color').value;
+      const theme = document.getElementById('f-theme').value;
+      const tagsRaw = document.getElementById('f-tags').value;
+
+      const sDate = new Date(startDate);
+      const eDate = new Date(endDate);
+      const totalDays = Math.max(1, Math.round((eDate - sDate) / (1000 * 60 * 60 * 24)) + 1);
+      const daysText = totalDays > 1 ? `${totalDays}天${totalDays - 1}夜` : '當日來回';
+      const tags = tagsRaw ? tagsRaw.split(/[,，]/).map(s => s.trim()).filter(Boolean) : ['Notion行程'];
+
+      trips.unshift({
+        id: 'trip-' + Date.now(),
+        title,
+        startDate,
+        endDate,
+        daysText,
+        color,
+        theme,
+        summary,
+        tags,
+        notionUrl,
+        hasInternalPage: false
+      });
+
+      saveTrips();
+      renderTripCards();
+      closeAddModal();
+      e.target.reset();
+    }
+
+    // 初始化
+    loadTrips();
+    renderTripCards();
+    selectHkDay(1);
+    loadTodos();
+    renderTodos();
+    updateHkClock();
+    setInterval(updateHkClock, 1000);
+  </script>
+</body>
+</html>
